@@ -63,14 +63,15 @@ constraints = [
 
 # 生成随机初始值并按步长赋值
 np.random.seed(42)  # 固定随机种子以便复现结果
-for i in range(10):
+for i in range(2):
     while True:
-        values = np.random.uniform(0.0, 1.0, 4)
+        values = np.random.uniform(0.0, 1.0, 3)
         alpha = np.random.uniform(0.0, 2.0)
-        p00, p01, p10, p11 = sorted(values, reverse=True)  # 确保 p11 是最小的值
+        p00, p01, p10 = sorted(values, reverse=True)  # 确保 p11 是最小的值
+        p11 = p10
         if p00 - p10 + p11 < p01 < p00 + p10 + p11 and alpha ** 2 < (
-                (p11 ** 2) * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
-                (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2):
+                p11 ** 2 * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
+                p11 ** 2 * (p01 - p00) ** 2 + p01 ** 2 * (p11 + p10) ** 2):
             break
 
     # 检查变量关系是否满足条件
@@ -92,11 +93,7 @@ for i in range(10):
 
     # 计算L_Q
     L_Q = F * math.sqrt(
-        (1 + (alpha ** 2) / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (p11 ** 2 + p01 ** 2 - 2 * p11 * p01 * cos_beta))
-
-    # cos2theta
-    cos_2theta = alpha * math.sqrt(p01 ** 2 + p11 ** 2 - 2 * p11 * p01 * cos_beta) / \
-                 (p11 * math.sqrt(1 - cos_beta ** 2) * math.sqrt(alpha ** 2 + (1 - cos_beta ** 2) * ((p11 + p10) ** 2)))
+        (1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (p11 ** 2 + p01 ** 2 - 2 * p11 * p01 * cos_beta))
 
     # 输出结果
     print(f"Iteration {i + 1}:")
@@ -107,7 +104,6 @@ for i in range(10):
     print("F:", F)
     print("cos_beta:", cos_beta)
     print("alpha:", alpha)
-    print("cos2theta:", cos_2theta)
     print("Optimal value:", problem.value)
     print("Optimal matrix X:", gamma.value)
     print("L_Q:", L_Q)
@@ -115,4 +111,4 @@ for i in range(10):
     print("Difference:", problem.value - L_Q)  # IQ为理论值，value为实际值
     print("\n")
     # else:
-    # print(f"Iteration {i + 1}: 条件不满足，跳过此迭代\n")
+        # print(f"Iteration {i + 1}: 条件不满足，跳过此迭代\n")

@@ -2,7 +2,6 @@ import numpy as np
 import cvxpy as cp
 import math
 
-# alpha = 0
 # 定义变量
 gamma = cp.Variable((9, 9))
 # gamma = cp.Variable((9, 9), complex=True)
@@ -93,9 +92,6 @@ for i in range(10):
         print("Optimal value:", problem.value)
         print("Optimal matrix X:", gamma.value)
         print("L_Q:", L_Q)
-        print("Is actual result > Theoretical ", problem.value > L_Q)  # ......?
-        print("Difference:", problem.value - L_Q)  # IQ为理论值，value为实际值
         print("\n")
-
     else:
         print(f"Iteration {i + 1}: 条件不满足，跳过此迭代\n")

@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 import cvxpy as cp
 
@@ -66,6 +68,7 @@ problem.solve(solver="SDPA")
 # 输出结果
 print("Optimal value:", problem.value)
 print("Optimal gamma matrix:", gamma.value)
+print("Is 理论值2sqrt2>实际值?:", 2 * math.sqrt(2) > problem.value)
 
 # TODO: function product_of_orthogonal()
 # TODO: index matrix
