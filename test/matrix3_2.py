@@ -160,7 +160,7 @@ for i in range(10):
     print(f"cos(μ2)的值为: {cos_mu2}")
     print(f"sin(μ2)的值为: {sin_mu2}")
     print("----------------------------------------")
-    
+
     # ----------------------------------------
 
     print("Optimal value:", problem.value)
