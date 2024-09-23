@@ -63,7 +63,7 @@ constraints = [
 
 # 定义并求解问题
 problem = cp.Problem(objective, constraints)
-problem.solve(solver="SDPA")
+problem.solve(solver="MOSEK")
 
 # 输出结果
 print("Optimal value:", problem.value)

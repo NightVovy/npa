@@ -63,7 +63,7 @@ constraints = [
 
 # 生成随机初始值并按步长赋值
 np.random.seed(42)  # 固定随机种子以便复现结果
-for i in range(10):
+for i in range(1):
     while True:
         values = np.random.uniform(0.0, 1.0, 4)
         alpha = np.random.uniform(0.0, 2.0)
@@ -84,7 +84,7 @@ for i in range(10):
     problem = cp.Problem(objective, constraints)
 
     # 求解问题
-    problem.solve(solver="SDPA")
+    problem.solve(solver="SDPA")  # SDPA OR mosek
 
     # F & cos(beta)
     F = p10 / p11 + 1
@@ -114,26 +114,61 @@ for i in range(10):
     # 计算θ的值
     theta = theta_2 / 2
 
+    # 计算 cos(θ) 和 sin(θ)
+    cos_theta = np.sqrt((cos_2theta + 1) / 2)
+    sin_theta = np.sqrt(1 - cos_theta ** 2)
+
     # 将θ的值转换为度数（可选）
     theta_degrees = math.degrees(theta)
 
-    # ----------------------------------------
-    # 测量
+    ########################################################################
+    # 态和测量                                      #
+    ########################################################################
     numerator1 = p00 + p10 * cos_beta
     denominator1 = math.sqrt((p00 + p10 * cos_beta) ** 2 + (p10 * sin_beta * sin_2theta) ** 2)
-    cos_mu1 = numerator1 / denominator1
+    cos_miu1 = numerator1 / denominator1
 
     numerator2 = p10 * sin_beta * sin_2theta
     denominator2 = math.sqrt((p00 + p10 * cos_beta) ** 2 + (p10 * sin_beta * sin_2theta) ** 2)
-    sin_mu1 = numerator2 / denominator2
+    sin_miu1 = numerator2 / denominator2
 
     numerator3 = p01 - p11 * cos_beta
     denominator3 = math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2)
-    cos_mu2 = numerator3 / denominator3
+    cos_miu2 = numerator3 / denominator3
 
     numerator4 = p11 * sin_beta * sin_2theta
     denominator4 = math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2)
-    sin_mu2 = - numerator4 / denominator4
+    sin_miu2 = - numerator4 / denominator4
+
+    # 定义量子态 |ψ⟩ = cos(θ)|00⟩ + sin(θ)|11⟩
+    psi = cos_theta * np.array([1, 0, 0, 0]) + sin_theta * np.array([0, 0, 0, 1])
+
+    # 定义测量算符 A0, A1, B0, B1
+    sigma_z = np.array([[1, 0], [0, -1]])  # σz
+    sigma_x = np.array([[0, 1], [1, 0]])  # σx
+
+    A0 = sigma_z
+    A1 = sigma_x
+    B0 = cos_miu1 * sigma_z + sin_miu1 * sigma_x  # cos(μ1)σz + sin(μ1)σx
+    B1 = cos_miu2 * sigma_z + sin_miu2 * sigma_x  # cos(μ2)σz + sin(μ2)σx
+
+
+    def measure_operator(state, operator):
+        return np.vdot(state, operator @ state)
+
+
+    # 计算量子态的密度矩阵
+    density_matrix = np.outer(psi, psi.conj())
+
+    # 计算测量结果
+    A0_measurement = np.trace(density_matrix @ np.kron(A0, np.eye(2)))
+    A0B0_measurement = np.trace(density_matrix @ np.kron(A0, B0))
+    A0B1_measurement = np.trace(density_matrix @ np.kron(A0, B1))
+    A1B0_measurement = np.trace(density_matrix @ np.kron(A1, B0))
+    A1B1_measurement = np.trace(density_matrix @ np.kron(A1, B1))
+
+    Iap = alpha * A0_measurement + p00 * A0B0_measurement + p01 * A0B1_measurement + \
+          p10 * A1B0_measurement - p11 * A1B1_measurement
 
     # ----------------------------------------
     # 输出结果
@@ -155,12 +190,19 @@ for i in range(10):
     print(f"θ的值为: {theta_degrees} 度")
     print("----------------------------------------")
 
-    print(f"cos(μ1)的值为: {cos_mu1}")
-    print(f"sin(μ1)的值为: {sin_mu1}")
-    print(f"cos(μ2)的值为: {cos_mu2}")
-    print(f"sin(μ2)的值为: {sin_mu2}")
+    print(f"cos(μ1)的值为: {cos_miu1}")
+    print(f"sin(μ1)的值为: {sin_miu1}")
+    print(f"cos(μ2)的值为: {cos_miu2}")
+    print(f"sin(μ2)的值为: {sin_miu2}")
     print("----------------------------------------")
 
+    print("A0 测量结果:", A0_measurement)
+    print("A0B0 测量结果:", A0B0_measurement)
+    print("A0B1 测量结果:", A0B1_measurement)
+    print("A1B0 测量结果:", A1B0_measurement)
+    print("A1B1 测量结果:", A1B1_measurement)
+    print("Iap = ", Iap)
+    print("----------------------------------------")
     # ----------------------------------------
 
     print("Optimal value:", problem.value)

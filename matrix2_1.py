@@ -83,6 +83,7 @@ for i in range(10):
 
     # 求解问题
     problem.solve(solver="SDPA")
+    # problem.solve(solver="MOSEK")
 
     # 计算L_Q
     L_Q = math.sqrt((p00 * p10 + p01 * p11) * ((p00**2 + p10**2) / (p00 * p10) + (p01**2 + p11**2) / (p01 * p11)))
