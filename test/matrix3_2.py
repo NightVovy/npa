@@ -1,6 +1,7 @@
 import numpy as np
 import cvxpy as cp
 import math
+from functions import measure_pure_state
 
 # 定义变量
 gamma = cp.Variable((9, 9))
@@ -153,19 +154,21 @@ for i in range(1):
     B1 = cos_miu2 * sigma_z + sin_miu2 * sigma_x  # cos(μ2)σz + sin(μ2)σx
 
 
-    def measure_operator(state, operator):
-        return np.vdot(state, operator @ state)
-
 
     # 计算量子态的密度矩阵
     density_matrix = np.outer(psi, psi.conj())
 
     # 计算测量结果
-    A0_measurement = np.trace(density_matrix @ np.kron(A0, np.eye(2)))
-    A0B0_measurement = np.trace(density_matrix @ np.kron(A0, B0))
-    A0B1_measurement = np.trace(density_matrix @ np.kron(A0, B1))
-    A1B0_measurement = np.trace(density_matrix @ np.kron(A1, B0))
-    A1B1_measurement = np.trace(density_matrix @ np.kron(A1, B1))
+    # A0_measurement = np.trace(density_matrix @ np.kron(A0, np.eye(2)))
+    # A0B0_measurement = np.trace(density_matrix @ np.kron(A0, B0))
+    # A0B1_measurement = np.trace(density_matrix @ np.kron(A0, B1))
+    # A1B0_measurement = np.trace(density_matrix @ np.kron(A1, B0))
+    # A1B1_measurement = np.trace(density_matrix @ np.kron(A1, B1))
+    A0_measurement = measure_pure_state(psi, A0, np.eye(2))
+    A0B0_measurement = measure_pure_state(psi, A0, B0)
+    A0B1_measurement = measure_pure_state(psi, A0, B1)
+    A1B0_measurement = measure_pure_state(psi, A1, B0)
+    A1B1_measurement = measure_pure_state(psi, A1, B1)
 
     Iap = alpha * A0_measurement + p00 * A0B0_measurement + p01 * A0B1_measurement + \
           p10 * A1B0_measurement - p11 * A1B1_measurement

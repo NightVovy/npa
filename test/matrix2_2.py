@@ -91,6 +91,29 @@ for i in range(10):
     # 计算L_Q
     L_Q = math.sqrt((p00 * p10 + p01 * p11) * ((p00**2 + p10**2) / (p00 * p10) + (p01**2 + p11**2) / (p01 * p11)))
 
+    # ----------------------------------------
+    cos_theta = np.cos(np.pi / 4)  # 例如 θ = π/4
+    sin_theta = np.sin(np.pi / 4)
+
+    cos_beta = (p00 ** 2 * p10 ** 2 * (p01**2 + p11**2) - p01 ** 2 * p11 ** 2 * (p00**2 + p10**2))/ \
+               (2 * p00*p01*p10*p11*(p00*p10+p01*p11))
+    sin_beta = math.sqrt(1-cos_beta**2)
+
+    alpha = 0
+
+    # 定义量子态 |ψ⟩ = cos(θ)|00⟩ + sin(θ)|11⟩
+    psi = cos_theta * np.array([1, 0, 0, 0]) + sin_theta * np.array([0, 0, 0, 1])
+
+    # 定义测量算符 A0, A1, B0, B1
+    sigma_z = np.array([[1, 0], [0, -1]])  # σz
+    sigma_x = np.array([[0, 1], [1, 0]])  # σx
+
+    A0 = sigma_z
+    A1 = sigma_x
+    B0 = cos_miu1 * sigma_z + sin_miu1 * sigma_x  # cos(μ1)σz + sin(μ1)σx
+    B1 = cos_miu2 * sigma_z + sin_miu2 * sigma_x  # cos(μ2)σz + sin(μ2)σx
+
+
     # 输出结果
     print(f"Iteration {i + 1}:")
     print("p00:", p00)
