@@ -1,7 +1,7 @@
 import numpy as np
 import cvxpy as cp
 import math
-from functions import measure_pure_state
+from functions import measure_pure_state, sort_numbers_with_names
 
 # 定义变量
 gamma = cp.Variable((9, 9))
@@ -64,7 +64,7 @@ constraints = [
 
 # 生成随机初始值并按步长赋值
 np.random.seed(42)  # 固定随机种子以便复现结果
-for i in range(1):
+for i in range(3):
     while True:
         values = np.random.uniform(0.0, 1.0, 4)
         alpha = np.random.uniform(0.0, 2.0)
@@ -139,7 +139,7 @@ for i in range(1):
 
     numerator4 = p11 * sin_beta * sin_2theta
     denominator4 = math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2)
-    sin_miu2 = - numerator4 / denominator4
+    sin_miu2 = - numerator4 / denominator4  # TODO: not correct
 
     # 定义量子态 |ψ⟩ = cos(θ)|00⟩ + sin(θ)|11⟩
     psi = cos_theta * np.array([1, 0, 0, 0]) + sin_theta * np.array([0, 0, 0, 1])
@@ -213,6 +213,8 @@ for i in range(1):
     print("L_Q:", L_Q)
     print("Is 实际值大于理论值 ", problem.value > L_Q)  # ......?
     print("Difference:", problem.value - L_Q)  # IQ为理论值，value为实际值
+
+    print("sorted values 从小到大:", sort_numbers_with_names(problem.value, L_Q, Iap))
     print("\n")
     # else:
     # print(f"Iteration {i + 1}: 条件不满足，跳过此迭代\n")

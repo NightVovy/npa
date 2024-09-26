@@ -49,7 +49,7 @@ def postCHSH_Q(eta, chshvalue):
             B[i, j] = np.where(party == T[i, j])[0][0]
 
     # variable declaration
-    G = cp.Variable((len(Y), len(Y)), hermitian=True)  # Gram matrix
+    G = cp.Variable((len(Y), len(Y)), hermitian=True)  # Gram matrix TODO: is this correct?
     V = cp.Variable(len(party))
 
     # Objective function

@@ -14,3 +14,9 @@ def measure_pure_state(psi, A0, B0):
     result = psi_dagger @ operator @ psi
 
     return result
+
+
+def sort_numbers_with_names(a, b, c):
+    numbers = {'实际值': a, '理论值': b, '反推': c}
+    sorted_numbers = sorted(numbers.items(), key=lambda item: item[1])
+    return sorted_numbers
