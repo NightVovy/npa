@@ -63,12 +63,14 @@ constraints = [
 
 # 生成随机初始值并按步长赋值
 np.random.seed(42)  # 固定随机种子以便复现结果
-for i in range(1):
+for i in range(10):
     while True:
         values = np.random.uniform(0.0, 1.0, 4)
         # alpha = np.random.uniform(0.0, 2.0)
         p00, p01, p10, p11 = sorted(values, reverse=True)  # 确保 p11 是最小的值
-        if 1 / p00 + 1 / p01 + 1 / p10 - 1 / p01 > 0:
+        cos_beta = (p00 ** 2 * p10 ** 2 * (p01 ** 2 + p11 ** 2) - p01 ** 2 * p11 ** 2 * (p00 ** 2 + p10 ** 2)) / \
+                   (2 * p00 * p01 * p10 * p11 * (p00 * p10 + p01 * p11))
+        if 1 / p00 + 1 / p01 + 1 / p10 - 1 / p01 > 0 and cos_beta <= 1:
             break
 
     # 目标函数
@@ -90,8 +92,8 @@ for i in range(1):
     sin_theta = np.sin(np.pi / 4)
     sin_2theta = np.sin(np.pi / 2)
 
-    cos_beta = (p00 ** 2 * p10 ** 2 * (p01 ** 2 + p11 ** 2) - p01 ** 2 * p11 ** 2 * (p00 ** 2 + p10 ** 2)) / \
-               (2 * p00 * p01 * p10 * p11 * (p00 * p10 + p01 * p11))  # TODO: NOT THIS ONE?
+    # cos_beta = (p00 ** 2 * p10 ** 2 * (p01 ** 2 + p11 ** 2) - p01 ** 2 * p11 ** 2 * (p00 ** 2 + p10 ** 2)) / \
+    #            (2 * p00 * p01 * p10 * p11 * (p00 * p10 + p01 * p11))  # TODO: NOT THIS ONE?
     sin_beta = math.sqrt(1 - cos_beta ** 2)  # ValueError: math domain error
 
     alpha = 0
@@ -120,7 +122,7 @@ for i in range(1):
     sigma_x = np.array([[0, 1], [1, 0]])  # σx
 
     A0 = sigma_z
-    A1 = sigma_x
+    A1 = cos_beta * sigma_z + sin_beta * sigma_x
     B0 = cos_miu1 * sigma_z + sin_miu1 * sigma_x  # cos(μ1)σz + sin(μ1)σx
     B1 = cos_miu2 * sigma_z + sin_miu2 * sigma_x  # cos(μ2)σz + sin(μ2)σx
 
@@ -148,6 +150,13 @@ for i in range(1):
     print("A1B0 测量结果:", A1B0_measurement)
     print("A1B1 测量结果:", A1B1_measurement)
     print("Iap = ", Iap)
+    print("----------------------------------------")
+
+    print("A0 in gamma", gamma[0, 1].value)
+    print("A0B0 in gamma", gamma[1, 3].value)
+    print("A0B1 in gamma", gamma[1, 4].value)
+    print("A1B0 in gamma", gamma[2, 3].value)
+    print("A1B1 in gamma", gamma[2, 4].value)
     print("----------------------------------------")
 
     print("Optimal value:", problem.value)

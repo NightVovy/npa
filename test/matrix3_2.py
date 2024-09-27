@@ -64,12 +64,12 @@ constraints = [
 
 # 生成随机初始值并按步长赋值
 np.random.seed(42)  # 固定随机种子以便复现结果
-for i in range(3):
+for i in range(1):
     while True:
         values = np.random.uniform(0.0, 1.0, 4)
         alpha = np.random.uniform(0.0, 2.0)
         p00, p01, p10, p11 = sorted(values, reverse=True)  # 确保 p11 是最小的值
-        if p00 - p10 + p11 < p01 < p00 + p10 + p11 and alpha ** 2 < (
+        if p00 - (p10 + p11) < p01 < p00 + (p10 + p11) and alpha ** 2 < (
                 (p11 ** 2) * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
                 (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2):
             break
@@ -90,6 +90,7 @@ for i in range(3):
     # F & cos(beta)
     F = p10 / p11 + 1
     cos_beta = (p01 - p00) / (p11 + p10)
+    F_2 = ((p00+p10*cos_beta) * p10) /((p01-p11*cos_beta) * p11) +1
 
     # 计算L_Q
     L_Q = F * math.sqrt(
@@ -122,6 +123,9 @@ for i in range(3):
     # 将θ的值转换为度数（可选）
     theta_degrees = math.degrees(theta)
 
+    sin_beta1 = 0
+    cos_beta1 = 1
+
     ########################################################################
     # 态和测量                                      #
     ########################################################################
@@ -139,7 +143,7 @@ for i in range(3):
 
     numerator4 = p11 * sin_beta * sin_2theta
     denominator4 = math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2)
-    sin_miu2 = - numerator4 / denominator4  # TODO: not correct
+    sin_miu2 = - numerator4 / denominator4  # TODO: not not correct
 
     # 定义量子态 |ψ⟩ = cos(θ)|00⟩ + sin(θ)|11⟩
     psi = cos_theta * np.array([1, 0, 0, 0]) + sin_theta * np.array([0, 0, 0, 1])
@@ -149,11 +153,9 @@ for i in range(3):
     sigma_x = np.array([[0, 1], [1, 0]])  # σx
 
     A0 = sigma_z
-    A1 = sigma_x
+    A1 = cos_beta * sigma_z + sin_beta * sigma_x
     B0 = cos_miu1 * sigma_z + sin_miu1 * sigma_x  # cos(μ1)σz + sin(μ1)σx
     B1 = cos_miu2 * sigma_z + sin_miu2 * sigma_x  # cos(μ2)σz + sin(μ2)σx
-
-
 
     # 计算量子态的密度矩阵
     density_matrix = np.outer(psi, psi.conj())
@@ -174,6 +176,21 @@ for i in range(3):
           p10 * A1B0_measurement - p11 * A1B1_measurement
 
     # ----------------------------------------
+    lambda1 = F * math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
+    lambda2 = ((p00 * cos_beta1 + p10 * cos_beta) * cos_miu1 + (
+            p01 * cos_beta1 - p11 * cos_beta) * cos_miu2) + (
+                      (p00 * sin_beta1 + p10 * sin_beta) * sin_miu1 + (
+                      p01 * sin_beta1 - p11 * sin_beta) * sin_miu2) * sin_2theta + alpha * cos_2theta * cos_beta1
+    lambda3 = math.sqrt(  # A14-2
+        (p00 * cos_beta1 + p10 * cos_beta) ** 2 + (p00 * sin_beta1 + p10 * sin_beta) ** 2 * (sin_2theta) ** 2) \
+              + math.sqrt((p01 * cos_beta1 - p11 * cos_beta) ** 2 + (p01 * sin_beta1 - p11 * sin_beta) ** 2 * (
+        sin_2theta) ** 2) + alpha * cos_2theta * cos_beta1
+    lambda4 = math.sqrt(
+        (p00 + p10 * cos_beta) ** 2 + (p10 * sin_beta * sin_2theta) ** 2) \
+              + math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
+    lambda5_1 = F * math.sqrt((p01 - p11 * cos_beta)**2 + (p11 * sin_beta * sin_2theta)**2) + alpha * cos_2theta
+
+    # ----------------------------------------
     # 输出结果
     print(f"Iteration {i + 1}:")
     print("p00:", p00)
@@ -181,6 +198,7 @@ for i in range(3):
     print("p10:", p10)
     print("p11:", p11)
     print("F:", F)
+    print("F2:", F_2)
     print("----------------------------------------")
 
     # ----------------------------------------
@@ -205,6 +223,18 @@ for i in range(3):
     print("A1B0 测量结果:", A1B0_measurement)
     print("A1B1 测量结果:", A1B1_measurement)
     print("Iap = ", Iap)
+    print("----------------------------------------")
+
+    print("A0 in gamma", gamma[0, 1].value)
+    print("A0B0 in gamma", gamma[1, 3].value)
+    print("A0B1 in gamma", gamma[1, 4].value)
+    print("A1B0 in gamma", gamma[2, 3].value)
+    print("A1B1 in gamma", gamma[2, 4].value)
+    print("lambda1:", lambda1)  # A20
+    print("lambda2:", lambda2)  # A14-1
+    print("lambda3:", lambda3)  # A14-2
+    print("lambda4:", lambda4)  # A14-3
+    print("lambda5:", lambda5_1)  # A14-4
     print("----------------------------------------")
     # ----------------------------------------
 
