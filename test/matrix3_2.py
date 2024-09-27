@@ -69,9 +69,10 @@ for i in range(1):
         values = np.random.uniform(0.0, 1.0, 4)
         alpha = np.random.uniform(0.0, 2.0)
         p00, p01, p10, p11 = sorted(values, reverse=True)  # 确保 p11 是最小的值
+        cos_beta = p00 * (math.sqrt(p11) - 1) / (p10 + p11 ** 2 * math.sqrt(p11))
         if p00 - (p10 + p11) < p01 < p00 + (p10 + p11) and alpha ** 2 < (
                 (p11 ** 2) * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
-                (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2):
+                (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2) and abs(cos_beta) < 1:
             break
 
     # 检查变量关系是否满足条件
@@ -89,13 +90,15 @@ for i in range(1):
 
     # F & cos(beta)
     F = p10 / p11 + 1
-    cos_beta = (p01 - p00) / (p11 + p10)
-    F_2 = ((p00+p10*cos_beta) * p10) /((p01-p11*cos_beta) * p11) +1
+    # cos_beta = (p01 - p00) / (p11 + p10)
+
+    F_2 = ((p00 + p10 * cos_beta) * p10) / ((p01 - p11 * cos_beta) * p11) + 1
 
     # 计算L_Q
     L_Q = F * math.sqrt(
         (1 + (alpha ** 2) / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (p11 ** 2 + p01 ** 2 - 2 * p11 * p01 * cos_beta))
-
+    L_Q2 = F_2 * math.sqrt(
+        (1 + (alpha ** 2) / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (p11 ** 2 + p01 ** 2 - 2 * p11 * p01 * cos_beta))
     # ----------------------------------------
 
     # beta
@@ -185,11 +188,13 @@ for i in range(1):
         (p00 * cos_beta1 + p10 * cos_beta) ** 2 + (p00 * sin_beta1 + p10 * sin_beta) ** 2 * (sin_2theta) ** 2) \
               + math.sqrt((p01 * cos_beta1 - p11 * cos_beta) ** 2 + (p01 * sin_beta1 - p11 * sin_beta) ** 2 * (
         sin_2theta) ** 2) + alpha * cos_2theta * cos_beta1
-    lambda4 = math.sqrt(
+    lambda4 = math.sqrt(  # A14-3
         (p00 + p10 * cos_beta) ** 2 + (p10 * sin_beta * sin_2theta) ** 2) \
               + math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
-    lambda5_1 = F * math.sqrt((p01 - p11 * cos_beta)**2 + (p11 * sin_beta * sin_2theta)**2) + alpha * cos_2theta
-
+    # A14-4
+    lambda5_1 = F * math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
+    lambda5_2 = F_2 * math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
+    # TODO: which F? F_2?
     # ----------------------------------------
     # 输出结果
     print(f"Iteration {i + 1}:")
@@ -234,13 +239,15 @@ for i in range(1):
     print("lambda2:", lambda2)  # A14-1
     print("lambda3:", lambda3)  # A14-2
     print("lambda4:", lambda4)  # A14-3
-    print("lambda5:", lambda5_1)  # A14-4
+    print("lambda51:", lambda5_1)  # A14-4
+    print("lambda52:", lambda5_2)  # A14-4
     print("----------------------------------------")
     # ----------------------------------------
 
     print("Optimal value:", problem.value)
     print("Optimal matrix X:", gamma.value)
     print("L_Q:", L_Q)
+    print("L_Q2:", L_Q2)
     print("Is 实际值大于理论值 ", problem.value > L_Q)  # ......?
     print("Difference:", problem.value - L_Q)  # IQ为理论值，value为实际值
 
