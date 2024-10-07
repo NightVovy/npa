@@ -2,6 +2,10 @@ import numpy as np
 import cvxpy as cp
 import math
 from functions import measure_pure_state, sort_numbers_with_names
+from sympy import symbols, Eq, solve, cos, sin
+from scipy.optimize import fsolve
+
+# 此文件用于验证各种数值
 
 # 定义变量
 gamma = cp.Variable((9, 9))
@@ -74,6 +78,7 @@ for i in range(1):
                 (p11 ** 2) * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
                 (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2) < 1:
             break
+        # TODO: if中的第一个条件是否应该存在
 
     # 检查变量关系是否满足条件
     # if 1 / p00 + 1 / p01 + 1 / p10 - 1 / p01 > 0:  # ?还是这个吗 还包含这个吗
@@ -88,7 +93,7 @@ for i in range(1):
     # 求解问题
     problem.solve(solver="SDPA")  # SDPA OR mosek
 
-    # F & cos(beta)
+    # F & cos(beta) TODO: may not correct
     F = p10 / p11 + 1
     cos_beta = (p01 - p00) / (p11 + p10)
 
@@ -113,11 +118,8 @@ for i in range(1):
                  (p11 * math.sqrt(1 - cos_beta ** 2) * math.sqrt(alpha ** 2 + (1 - cos_beta ** 2) * ((p11 + p10) ** 2)))
     sin_2theta = math.sqrt(1 - cos_2theta ** 2)
 
-    # theta_2
-    theta_2 = math.acos(cos_2theta)
-
     # 计算θ的值
-    theta = theta_2 / 2
+    theta = math.acos(cos_2theta) / 2
 
     # 计算 cos(θ) 和 sin(θ)
     cos_theta = np.sqrt((cos_2theta + 1) / 2)
@@ -178,6 +180,57 @@ for i in range(1):
     Iap = alpha * A0_measurement + p00 * A0B0_measurement + p01 * A0B1_measurement + \
           p10 * A1B0_measurement - p11 * A1B1_measurement
 
+
+    # ----------------------------------------
+    # 用 A13 & A5 get cos_beta & cos_theta
+    def equation1(theta_1):
+        return alpha * cos_beta1 - ((p10 * sin_miu1 - p11 * sin_miu2) * sin_beta * np.cos(2 * theta_1) / np.sin(
+            2 * theta_1) +
+                                    (p00 * sin_miu1 + p01 * sin_miu2) * sin_beta1 * np.cos(2 * theta_1) / np.sin(
+                    2 * theta_1))
+
+
+    # theta_1, beta_2 = symbols('theta_1 beta_2')
+    # equation1 = Eq(alpha * cos_beta1 - ((p10 * sin_miu1 - p11 *
+    # sin_miu2) * sin_beta * cos(2 * theta_1) / sin(2 * theta_1) + (p00 * sin_miu1 + p01 * sin_miu2) * sin_beta1 *
+    # cos(2 * theta_1) / sin(2 * theta_1)), 0)
+    # equation2 = Eq(p10 * sin(beta_2) * (p00 + p10 * cos(beta_2)) / ((p00 +
+    # p10 * cos(beta_2))**2 + (p10 * sin(beta_2) * sin(2*theta_1))**2) - p11 * sin(beta_2) * (p01 - p11 * cos(
+    # beta_2)) / ((p01 - p11 * cos(beta_2))**2 + (p11 * sin(beta_2) * sin(2*theta_1))**2), 0)
+    #
+    # solution = solve((equation1, equation2), (theta_1, beta_2))
+
+    # 定义初始猜测值的范围
+    initial_guesses = np.linspace(0.01, np.pi / 4 - 0.01, 10)
+
+    # 使用fsolve求解
+    solutions = []
+    for guess in initial_guesses:
+        solution = fsolve(equation1, guess)
+        if 0 < solution[0] < np.pi / 4:
+            solutions.append(solution[0])
+
+    # 去重并计算 cos(θ)
+    unique_solutions = np.unique(solutions)
+    cos_theta_values = np.cos(unique_solutions)
+    theta_1 = unique_solutions
+
+
+    def equation2(beta_2):
+        return p10 * np.sin(beta_2) * (p00 + p10 * np.cos(beta_2)) / ((p00 + p10 * np.cos(
+            beta_2)) ** 2 + (p10 * np.sin(beta_2) * np.sin(2 * theta_1)) ** 2) - p11 * np.sin(beta_2) * (
+                p01 - p11 * np.cos(
+            beta_2)) / ((p01 - p11 * np.cos(beta_2)) ** 2 + (p11 * np.sin(beta_2) * np.sin(2 * theta_1)) ** 2)
+
+    # 使用fsolve求解
+    solutions = []
+    for guess in initial_guesses:
+        solution = fsolve(equation2, guess)
+        if 0 < solution[0] < np.pi:
+            solutions.append(solution[0])
+
+    unique_solutions2 = np.unique(solutions)
+
     # ----------------------------------------
     lambda1 = F * math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
     lambda2 = ((p00 * cos_beta1 + p10 * cos_beta) * cos_miu1 + (
@@ -194,6 +247,12 @@ for i in range(1):
     # A14-4
     lambda5_1 = F * math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
     # lambda5_2 = F_2 * math.sqrt((p01 - p11 * cos_beta) ** 2 + (p11 * sin_beta * sin_2theta) ** 2) + alpha * cos_2theta
+
+    a12 = alpha * sin_beta1 + (p00 * cos_beta1 + p10 * cos_beta) * sin_miu1 + (
+            p01 * cos_beta1 - p11 * cos_beta) * sin_miu2
+    a13 = (p00 * sin_beta1 + p10 * sin_beta) * cos_miu1 + (p01 * sin_beta1 - p11 * sin_beta) * cos_miu2
+    what = p10 * cos_miu1 - p11 * cos_miu2
+
     # TODO: which F? F_2?
     # ----------------------------------------
     # 输出结果
@@ -212,6 +271,7 @@ for i in range(1):
     print(f"β的值为: {beta} 弧度")
     print(f"β的值为: {beta_degrees} 度")
     print("cos2theta:", cos_2theta)
+    print("cosθ:", cos_theta)
     print(f"θ的值为: {theta} 弧度")
     print(f"θ的值为: {theta_degrees} 度")
     print("----------------------------------------")
@@ -230,6 +290,11 @@ for i in range(1):
     print("Iap = ", Iap)
     print("----------------------------------------")
 
+    # 验证一些数值
+    print(f"解出的 cos(θ) 值为: {cos_theta_values}")
+    # print(solution)
+    print("----------------------------------------")
+
     print("A0 in gamma", gamma[0, 1].value)
     print("A0B0 in gamma", gamma[1, 3].value)
     print("A0B1 in gamma", gamma[1, 4].value)
@@ -240,6 +305,9 @@ for i in range(1):
     print("lambda3:", lambda3)  # A14-2
     print("lambda4:", lambda4)  # A14-3
     print("lambda51:", lambda5_1)  # A14-4
+    print("A12:", a12)
+    print("A13:", a13)
+    print("what:", what)
     # print("lambda52:", lambda5_2)  # A14-4
     print("----------------------------------------")
     # ----------------------------------------
