@@ -1,0 +1,7 @@
+matrix: 原版本的matrix但是换了方式输出。目前matrix3还是老问题，在找问题，应该问题出在取值区间和公式不对。
+
+functions: 集合了一些常用功能，目前只有量子测量。
+
+test4: 验证那个b三次多项式的解，说了很多次了这个就没有实数解。
+
+https://colab.research.google.com/drive/1pvb7d3WbctnNwEXC5UpqOKjwhbm0jPqF#scrollTo=o91j_AZlAEAR
