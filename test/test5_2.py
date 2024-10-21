@@ -2,7 +2,6 @@ import numpy as np
 import cvxpy as cp
 import math
 
-
 # 定义变量
 gamma = cp.Variable((9, 9))
 
@@ -52,10 +51,15 @@ constraints = [
 
 ]
 
+# 定义beta值[0, pi/2 = 1.57]
+beta = 1.3
+
+# 定义alpha值[0,2]
+alpha = 1
+
 # 定义参数
-alpha = 0.73
-p00 = 1
-p01 = 1
+p00 = beta
+p01 = beta
 p10 = 1
 p11 = 1
 
@@ -69,11 +73,10 @@ problem = cp.Problem(objective, constraints)
 # 求解问题
 problem.solve(solver="SDPA")  # SDPA OR mosek
 
-
 # 输出结果
 print("Optimal gamma:", gamma.value)
 print("Optimal value:", problem.value)
 
-# 计算 sqrt(8 + 2 * alpha^2) 并输出
-result = math.sqrt(8 + 2 * alpha**2)
-print("Result of sqrt(8 + 2 * alpha^2):", result)
+# 计算 sqrt((4 + alpha ** 2) * (1 + beta ** 2)) 并输出
+result = math.sqrt((4 + alpha ** 2) * (1 + beta ** 2))
+print("Result of sqrt((4 + alpha ** 2) * (1 + beta ** 2)):", result)

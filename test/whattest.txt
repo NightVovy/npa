@@ -7,3 +7,7 @@ test4: 验证那个b三次多项式的解，说了很多次了这个就没有实
 https://colab.research.google.com/drive/1pvb7d3WbctnNwEXC5UpqOKjwhbm0jPqF#scrollTo=o91j_AZlAEAR
 
 
+2024.10.21 创建一个新的matrix，验证已知beta值，在Iap上
+test5from m3_2: 验证pij=1，alpha=1的时候，用NPA算最大违背【结果近似（我没说是一致啊）】简单修改alpha值也是这样。
+alpha的滑块暂时用不了，1没有安装求解器2没有cvxpy
+
