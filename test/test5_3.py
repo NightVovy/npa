@@ -52,14 +52,15 @@ constraints = [
 ]
 
 # 定义beta值[0, pi/2 = 1.57]
-beta = 1.2
+beta1 = 1.2
+beta2 = 1.4
 
 # 定义alpha值[0,2]
 alpha = 1
 
 # 定义参数
-p00 = beta
-p01 = beta
+p00 = beta1
+p01 = beta2
 p10 = 1
 p11 = 1
 
@@ -79,6 +80,9 @@ print("Optimal value:", problem.value)
 
 
 # 计算 sqrt((4 + alpha ** 2) * (1 + beta ** 2)) 并输出
-result = math.sqrt((4 + alpha ** 2) * (1 + beta ** 2))
-print("Result of sqrt((4 + alpha ** 2) * (1 + beta ** 2)):", result)
-print("差值:", result - problem.value)
+result1 = math.sqrt((4 + alpha ** 2) * (1 + beta1 ** 2))
+result2 = math.sqrt((4 + alpha ** 2) * (1 + beta2 ** 2))
+print("Result1 of sqrt((4 + alpha ** 2) * (1 + beta ** 2)):", result1)
+print("差值1:", result1 - problem.value)
+print("Result2 of sqrt((4 + alpha ** 2) * (1 + beta ** 2)):", result2)
+print("差值2:", result2 - problem.value)
