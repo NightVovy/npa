@@ -52,28 +52,28 @@ constraints = [
 ]
 
 # 定义beta值[0, pi/2 = 1.57]
-beta1 = 0.9
-beta2 = 0.89999999
 
 # 定义alpha值[0,2]
-alpha = 1.4
+alpha = 0.99
 
 # 定义参数
-p00 = beta1
-p01 = beta2
+# TODO: Pij的取值范围 [0,1]
+p00 = 1
+p01 = 0
 p10 = 1
 p11 = 1
 
-cosbeta2 = p01 - p00 / p11 + p10
+# TODO： IS THIS CORRECT?
+cosbeta2 = (p01 - p00) / (p11 + p10)
 
-F = (p00 + p10 * np.cos(beta2)) * p10 / (p01 - p11 * np.cos(beta2)) * p11 + 1
-F2 = (p00 + p10 * cosbeta2) * p10 / (p01 - p11 * cosbeta2) * p11 + 1
+F = (((p00 + p10 * cosbeta2) * p10) / ((p01 - p11 * cosbeta2) * p11)) + 1
+F2 = p10 / p11 + 1
+
+# lambda1 = F * math.sqrt(
+#     (1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * np.cos(beta2)))
 
 lambda1 = F * math.sqrt(
-    1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2) * (p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * np.cos(beta2)))
-
-lambda2 = F * math.sqrt(
-    1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2) * (p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * cosbeta2))
+    (1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * cosbeta2))
 
 alpha2 = ((p11 ** 2) * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
         (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2)
@@ -93,10 +93,12 @@ print("Optimal gamma:", gamma.value)
 print("Optimal value:", problem.value)
 
 print("cosbeta2:", cosbeta2)
-print("is cosbeta2 < 1?:", cosbeta2 < 1)
-print("alpha:", alpha ** 2)
-print("alpha2:", alpha2)
+print("is |cosbeta2| < 1?:", abs(cosbeta2) < 1)
+print("alpha^2:", alpha ** 2)
+print("alpha constraint:", alpha2)
+print("F:", F)
+print("F2:", F2)
 print("is alpha in constraint?:", alpha ** 2 < alpha2)
 print("Result1 of lambda1:", lambda1)
-print("Result1 of lambda2:", lambda2)
+
 print("和npa的差值1:", lambda1 - problem.value)
