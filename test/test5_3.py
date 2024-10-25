@@ -52,17 +52,31 @@ constraints = [
 ]
 
 # 定义beta值[0, pi/2 = 1.57]
-beta1 = 1.2
-beta2 = 1.4
+beta1 = 0.9
+beta2 = 0.89999999
 
 # 定义alpha值[0,2]
-alpha = 1
+alpha = 1.4
 
 # 定义参数
 p00 = beta1
 p01 = beta2
 p10 = 1
 p11 = 1
+
+cosbeta2 = p01 - p00 / p11 + p10
+
+F = (p00 + p10 * np.cos(beta2)) * p10 / (p01 - p11 * np.cos(beta2)) * p11 + 1
+F2 = (p00 + p10 * cosbeta2) * p10 / (p01 - p11 * cosbeta2) * p11 + 1
+
+lambda1 = F * math.sqrt(
+    1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2) * (p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * np.cos(beta2)))
+
+lambda2 = F * math.sqrt(
+    1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2) * (p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * cosbeta2))
+
+alpha2 = ((p11 ** 2) * ((p11 + p10) ** 2 - (p01 - p00) ** 2) ** 2 + 2 * p01 * p11 * (p11 + p10) * (p01 - p00)) / (
+        (p11 ** 2) * (p01 - p00) ** 2 + (p01 ** 2) * (p11 + p10) ** 2)
 
 # 目标函数
 objective = cp.Maximize(
@@ -78,11 +92,11 @@ problem.solve(solver="SDPA")  # SDPA OR mosek
 print("Optimal gamma:", gamma.value)
 print("Optimal value:", problem.value)
 
-
-# 计算 sqrt((4 + alpha ** 2) * (1 + beta ** 2)) 并输出
-result1 = math.sqrt((4 + alpha ** 2) * (1 + beta1 ** 2))
-result2 = math.sqrt((4 + alpha ** 2) * (1 + beta2 ** 2))
-print("Result1 of sqrt((4 + alpha ** 2) * (1 + beta ** 2)):", result1)
-print("差值1:", result1 - problem.value)
-print("Result2 of sqrt((4 + alpha ** 2) * (1 + beta ** 2)):", result2)
-print("差值2:", result2 - problem.value)
+print("cosbeta2:", cosbeta2)
+print("is cosbeta2 < 1?:", cosbeta2 < 1)
+print("alpha:", alpha ** 2)
+print("alpha2:", alpha2)
+print("is alpha in constraint?:", alpha ** 2 < alpha2)
+print("Result1 of lambda1:", lambda1)
+print("Result1 of lambda2:", lambda2)
+print("和npa的差值1:", lambda1 - problem.value)

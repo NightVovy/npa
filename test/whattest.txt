@@ -11,3 +11,4 @@ https://colab.research.google.com/drive/1pvb7d3WbctnNwEXC5UpqOKjwhbm0jPqF#scroll
 test5from m3_2: 验证pij=1，alpha=1的时候，用NPA算最大违背【结果近似（我没说是一致啊）】简单修改alpha值也是这样。
 alpha的滑块暂时用不了，1没有安装求解器2没有cvxpy
 
+2024.10.24 在test5.3上验证：p10=p11=1, p00 = beta1, p11 = beta2, 最后的结果怎么样
