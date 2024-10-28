@@ -54,14 +54,14 @@ constraints = [
 # 定义beta值[0, pi/2 = 1.57]
 
 # 定义alpha值[0,2]
-alpha = 0.99
+alpha = 0.1
 
 # 定义参数
 # TODO: Pij的取值范围 [0,1]
-p00 = 1
-p01 = 0
-p10 = 1
-p11 = 1
+p00 = 0.25
+p01 = 0.25
+p10 = 0.25
+p11 = 0.25
 
 # TODO： IS THIS CORRECT?
 cosbeta2 = (p01 - p00) / (p11 + p10)
