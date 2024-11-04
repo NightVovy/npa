@@ -42,3 +42,10 @@ neqez.py 由于p10neqp11.py实在是太复杂太慢，于是固定了p00,p10的�
 trysolve.py: 自己输入pij和alpha，解出beta和theta的值。然后再带回lambda里面。
 (滑块版，放在了colab)
 test6from5.py: 直接把trysolve和NPA放一起看了，但是这样就没法用滑块。
+
+2024.11.4
+neq2ez.py: 先自己代入pij和theta, 看看beta和alpha的结果怎么样。
+懒得代入，直接上脚本循环了，有了几个数值。还没验证，在neq2.py验证和NPA的差距吧。
+
+另外我找不到最纯粹的无约束NPA了...所以有了npaPure.py (Note: 还不够pure)
+neq2.py: NPA和lambda差值还是太大了。。。。。。
