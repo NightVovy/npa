@@ -1,9 +1,9 @@
 import numpy as np
 import xgboost as xgb
 import lightgbm as lgb
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures, MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
-from sklearn.model_selection import GridSearchCV
+from mpl_toolkits.mplot3d import Axes3D
 
 # 读取数据
 def read_data(file_path):
@@ -20,21 +20,19 @@ def read_data(file_path):
                 data.append(params)
     return data
 
-# 使用XGBoost和LightGBM拟合参数
+# 使用XGBoost和LightGBM拟合p00、p01、alpha
 def fit_parameters_with_advanced_models(data):
-    # 提取需要拟合的变量，去掉 p11
+    # 提取需要拟合的变量，去掉 p10
     p00 = np.array([entry['p00'] for entry in data])
     p01 = np.array([entry['p01'] for entry in data])
-    p10 = np.array([entry['p10'] for entry in data])
     alpha_values = np.array([entry['alpha'] for entry in data])
 
     # 准备特征矩阵，并添加更高阶交互特征
-    X = np.column_stack([p00, p01, p10,
-                         p00*p01, p01*p10, p00*p10,  # 二次交互项
-                         p00**2, p01**2, p10**2,  # 二次自交互项
-                         p00*p01*p10, p00**3, p01**3, p10**3])  # 三次交互项和自交互项
+    X = np.column_stack([p00, p01,
+                         p00*p01,  # 二次交互项
+                         p00**2, p01**2])  # 二次自交互项
 
-    # 标准化特征（可以试试 MinMaxScaler 来替代）
+    # 标准化特征
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
@@ -48,30 +46,52 @@ def fit_parameters_with_advanced_models(data):
     lgb_model.fit(X_scaled, alpha_values)
     lgb_predicted_alpha = lgb_model.predict(X_scaled)
 
-    # 可视化拟合效果（XGBoost）
+    # 拟合后的二维图（XGBoost）
     plt.figure(figsize=(10, 6))
-    plt.scatter(alpha_values, xgb_predicted_alpha, color='blue', label='XGBoost Predicted vs Actual')
+    plt.scatter(alpha_values, xgb_predicted_alpha, c='blue', label='XGBoost Predicted vs Actual')
     plt.plot([min(alpha_values), max(alpha_values)], [min(alpha_values), max(alpha_values)], color='red', linestyle='--', label='Perfect fit')
     plt.xlabel('Actual alpha')
     plt.ylabel('Predicted alpha')
-    plt.title('XGBoost Fit of alpha vs p00, p01, p10 (without p11)')
+    plt.title('XGBoost Fit of alpha vs p00, p01 (without p10)')
     plt.legend()
     plt.show()
 
-    # 可视化拟合效果（LightGBM）
+    # 拟合后的二维图（LightGBM）
     plt.figure(figsize=(10, 6))
-    plt.scatter(alpha_values, lgb_predicted_alpha, color='green', label='LightGBM Predicted vs Actual')
+    plt.scatter(alpha_values, lgb_predicted_alpha, c='green', label='LightGBM Predicted vs Actual')
     plt.plot([min(alpha_values), max(alpha_values)], [min(alpha_values), max(alpha_values)], color='red', linestyle='--', label='Perfect fit')
     plt.xlabel('Actual alpha')
     plt.ylabel('Predicted alpha')
-    plt.title('LightGBM Fit of alpha vs p00, p01, p10 (without p11)')
+    plt.title('LightGBM Fit of alpha vs p00, p01 (without p10)')
     plt.legend()
     plt.show()
 
     return xgb_model, lgb_model
 
+# 生成三维图：不进行拟合，只显示原始数据
+def plot_3d_scatter(p00, p01, alpha_values):
+    fig = plt.figure(figsize=(12, 8))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(p00, p01, alpha_values, c='blue', marker='o', label='Actual data', alpha=0.7)
+
+    ax.set_xlabel('p00')
+    ax.set_ylabel('p01')
+    ax.set_zlabel('Alpha')
+    ax.set_title('3D Scatter Plot of p00, p01, and alpha')
+    ax.legend()
+
+    plt.show()
+
 # 读取数据
 data = read_data('data.txt')
 
-# 使用XGBoost和LightGBM模型拟合参数
+# 提取 p00, p01 和 alpha 数据
+p00 = np.array([entry['p00'] for entry in data])
+p01 = np.array([entry['p01'] for entry in data])
+alpha_values = np.array([entry['alpha'] for entry in data])
+
+# 使用XGBoost和LightGBM模型拟合p00、p01、alpha
 xgb_model, lgb_model = fit_parameters_with_advanced_models(data)
+
+# 生成三维散点图，不进行拟合
+plot_3d_scatter(p00, p01, alpha_values)
