@@ -49,3 +49,6 @@ neq2ez.py: 先自己代入pij和theta, 看看beta和alpha的结果怎么样。
 
 另外我找不到最纯粹的无约束NPA了...所以有了npaPure.py (Note: 还不够pure)
 neq2.py: NPA和lambda差值还是太大了。。。。。。
+
+2024.11.5
+data Folder/nihe1.py: 尝试拟合数据...什么是拟合？
