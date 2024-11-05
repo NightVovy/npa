@@ -84,6 +84,9 @@ def find_best_parameters():
         # 存储结果
         results.append((p00, p01, alpha, beta, theta, lambda1, problem.value))
 
+        # 打印最优矩阵 X
+        print("Optimal matrix X:", gamma.value)
+
     # 输出所有结果
     print("参数组合结果：")
     for p00, p01, alpha, beta, theta, lambda1, sdp_value in results:
