@@ -21,6 +21,9 @@ def find_best_parameters():
         for p00 in p_values:
             for p01 in p_values:
                 # 遍历 p10 和 p11，保持它们相等
+                # if p00 == p01:
+                #     continue  # 跳过 p00 和 p01 相等的情况
+
                 for p10 in p_values:
                     p11 = p10  # p10 和 p11 相等
 

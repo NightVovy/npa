@@ -52,3 +52,6 @@ neq2.py: NPA和lambda差值还是太大了。。。。。。
 
 2024.11.5
 data Folder/nihe1.py: 尝试拟合数据...什么是拟合？
+
+2024.11.6
+findpeqWithA5.py: p10=p11=1 (以后都是1)的时候，直接遍历alpha太难找到和p的关系了，所以改成遍历theta
