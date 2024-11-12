@@ -21,7 +21,7 @@ def find_best_parameters():
 
     # 遍历 p00, p01 和 theta
     for p00 in p_values:
-        for p01 in p_values: # np.arange(p00 + step, 1 + step, step)
+        for p01 in p_values:
             if p00 == p01:
                 continue  # 跳过 p00 和 p01 相等的情况
 
@@ -106,15 +106,19 @@ def find_best_parameters():
 
                 # 检查差值
                 if abs(lambda1 - problem.value) < tolerance:
-                    results.append((p00, p01, p10, p11, alpha, theta, cosbeta2, lambda1, problem.value))
+                    # 存储符合条件的结果和 gamma 矩阵的值
+                    results.append((p00, p01, p10, p11, alpha, theta, cosbeta2, lambda1, problem.value, gamma.value))
 
     # 输出所有符合条件的结果（在遍历结束后）
     if results:
-        print("找到的参数组合：")
-        for p00, p01, p10, p11, alpha, theta, cosbeta2, lambda1, problem_value in results:
+        print("找到的参数组合和对应的 gamma 矩阵：")
+        for p00, p01, p10, p11, alpha, theta, cosbeta2, lambda1, problem_value, gamma_matrix in results:
             print(f"p00={p00:.2f}, p01={p01:.2f}, p10={p10:.2f}, p11={p11:.2f}, "
                   f"alpha={alpha:.2f}, theta={theta:.2f}, cosbeta2={cosbeta2:.5f}, "
                   f"lambda={lambda1:.5f}, problem.value={problem_value:.5f}")
+            print("gamma matrix:")
+            print(gamma_matrix)
+            print("\n")
     else:
         print("未找到满足条件的 p00、p01 和 alpha 组合。")
 
