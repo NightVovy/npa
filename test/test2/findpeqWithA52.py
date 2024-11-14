@@ -2,6 +2,8 @@ import numpy as np
 import cvxpy as cp
 import math
 
+# trash
+
 def find_best_parameters():
     # 定义初始参数
     p00_start = 0  # 初始 p00 值
@@ -59,9 +61,7 @@ def find_best_parameters():
                     (1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (
                         p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * cosbeta2))
 
-                lambda2 = (np.sqrt((p00 + p10 * cosbeta2) ** 2 + p10 ** 2 * sinbeta2 ** 2 * (2 * sintheta2 ** 2))) + \
-                   (np.sqrt((p01 - p11 * cosbeta2) ** 2 + p11 ** 2 * sinbeta2 ** 2 * (2 * sintheta2 ** 2))) + \
-                   (alpha * (costheta2 ** 2))
+
 
                 # 确保 lambda2 是一个标量
                 if np.isscalar(lambda2):

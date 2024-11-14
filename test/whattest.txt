@@ -55,3 +55,8 @@ data Folder/nihe1.py: 尝试拟合数据...什么是拟合？
 
 2024.11.6
 findpeqWithA5.py: p10=p11=1 (以后都是1)的时候，直接遍历alpha太难找到和p的关系了，所以改成遍历theta
+
+2024.11.13
+findpeqWithA52.py: 说实话，不需要A14的lambda，因为p10=p11，没法用左下角求beta了，左下角一定是0。
+是否要用量子测量验证一下结果？因为矩阵的项对应的是<A0A1B0>这样的概率值。注意A0A1B0不是A0,A1,B0简单相乘。
+data_gamma

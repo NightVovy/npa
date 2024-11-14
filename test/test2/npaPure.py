@@ -1,11 +1,11 @@
 import cvxpy as cp
 
 # Define parameters with specified values
-alpha = 1.95 # Set alpha value
-p00 = 1         # Set p00 value
-p01 = 0.95          # Set p01 value
-p10 = 1          # Set p10 value
-p11 = 1          # Set p11 value
+alpha = 1.9     # Set alpha value
+p00 = 0.1         # Set p00 value
+p01 = 0.1         # Set p01 value
+p10 = 0.95          # Set p10 value
+p11 = 0.95          # Set p11 value
 
 # Define variables
 gamma = cp.Variable((9, 9))  # Declare gamma as hermitian
