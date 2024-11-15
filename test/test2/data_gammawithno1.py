@@ -1,5 +1,5 @@
 import cvxpy as cp
-
+import numpy as np
 
 # Define the function to solve the SDP problem for given parameters
 def solve_sdp(alpha, p00, p01, p10, p11):
@@ -43,8 +43,7 @@ def solve_sdp(alpha, p00, p01, p10, p11):
 
     # Objective function
     objective = cp.Maximize(
-        alpha_param * gamma[0, 1] + p00_param * gamma[1, 3] + p01_param * gamma[1, 4] + p10_param * gamma[
-            2, 3] - p11_param * gamma[2, 4]
+        alpha_param * gamma[0, 1] + p00_param * gamma[1, 3] + p01_param * gamma[1, 4] + p10_param * gamma[2, 3] - p11_param * gamma[2, 4]
     )
 
     # Define and solve the problem
@@ -80,23 +79,29 @@ with open('data.txt', 'r') as file:
             # Solve the SDP problem with the current parameters
             gamma_matrix, sdp_value = solve_sdp(alpha, p00, p01, p10, p11)
 
-            # Get the value of gamma[0, 5] (first row, sixth element)
-            gamma_value = gamma_matrix[0, 5]
-
-            # Debug: Print gamma_value
-            print(f"gamma[0, 5] value: {gamma_value}")
-
-            # Skip the current iteration if the difference between gamma[0, 5] and 1 is <= 1e-12
-            if abs(gamma_value - 1) <= 1e-12:
-                print(f"Skipping line with gamma[0, 5] close to 1: {gamma_value}")
-                continue  # Skip this iteration
-
-            # Output the result if the condition is not met (gamma[0, 5] differs from 1 by more than e-12)
-            print(f"Results for p00={p00}, p01={p01}, p10={p10}, p11={p11}, alpha={alpha}:")
+            # Debug: Print gamma_matrix
             print("Optimal gamma matrix:")
             print(gamma_matrix)
+
+            # Iterate over all non-diagonal elements in the gamma matrix
+            skip_line = False
+            for i in range(gamma_matrix.shape[0]):
+                for j in range(gamma_matrix.shape[1]):
+                    if i != j:  # Skip diagonal elements
+                        # Check if the absolute value of the non-diagonal element is too close to 1
+                        if np.abs(gamma_matrix[i, j] - 1) < 1e-6:  # Check if difference with 1 is smaller than tolerance
+                            print(f"Skipping line due to gamma[{i}, {j}] = {gamma_matrix[i, j]} too close to 1")
+                            skip_line = True
+                            break
+                if skip_line:
+                    break
+
+            if skip_line:
+                continue  # Skip the current line if any off-diagonal element is too close to 1
+
+            # Output the result if the condition is not met
+            print(f"Results for p00={p00}, p01={p01}, p10={p10}, p11={p11}, alpha={alpha}:")
             print("SDP value:", sdp_value)
-            print("Gamma[0, 5]:", gamma_value)
             print("-" * 50)
 
         except KeyError as e:

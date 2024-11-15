@@ -1,3 +1,5 @@
+# 懒死你算了
+# 在findp5.py的基础上，只加入了输出gamma矩阵
 import numpy as np
 import cvxpy as cp
 import math
@@ -6,10 +8,12 @@ def find_best_parameters():
     # 定义初始参数
     p00_start = 1  # 初始 p00 值
     p01_start = 0  # 初始 p01 值
+    p10_start = 1  # 固定 p10 值
+    p11_start = 1  # 固定 p11 值
     step = 0.05
     tolerance = 1e-5
 
-    # 创建所有可能的 p00 和 p01 组合
+    # 创建所有可能的 p00、p01 组合
     p_values = np.arange(0, 1 + step, step)
     # 遍历 alpha
     alpha_values = np.arange(0.1, 2.1, 0.2)  # alpha 从 0.1 到 2，步长为 0.2
@@ -19,10 +23,9 @@ def find_best_parameters():
     for alpha in alpha_values:
         for p00 in p_values:
             for p01 in p_values:
-                if p00 + p01 > 1:
-                    continue  # 确保 p00 + p01 <= 1
-
-                p10 = p11 = 1  # 让 p10 = p11，且保持它们的值相等
+                # 固定 p10 和 p11
+                p10 = p10_start
+                p11 = p11_start
 
                 # 计算 cosbeta2
                 cosbeta2 = (p01 - p00) / (p11 + p10)
@@ -84,14 +87,17 @@ def find_best_parameters():
 
                 # 检查差值
                 if abs(lambda1 - problem.value) < tolerance:
-                    results.append((p00, p01, alpha, lambda1, problem.value, cosbeta2))
+                    results.append((p00, p01, p10, p11, alpha, cosbeta2, lambda1, problem.value, gamma.value))
 
     # 输出所有符合条件的结果
     if results:
         print("找到的参数组合：")
-        for p00, p01, alpha, lambda1, problem_value, cosbeta2 in results:
-            print(f"p00={p00:.2f}, p01={p01:.2f}, alpha={alpha:.2f}, "
-                  f"lambda1={lambda1:.5f}, problem.value={problem_value:.5f}, cosbeta2={cosbeta2:.5f}")
+        for p00, p01, p10, p11, alpha, cosbeta2, lambda1, problem_value, gamma_matrix in results:
+            print(f"p00={p00:.2f}, p01={p01:.2f}, p10={p10:.2f}, p11={p11:.2f}, "
+                  f"alpha={alpha:.2f}, cosbeta2={cosbeta2:.5f}, "
+                  f"lambda={lambda1:.5f}, problem.value={problem_value:.5f}")
+            print("对应的 gamma 矩阵：")
+            print(gamma_matrix)
     else:
         print("未找到满足条件的 p00、p01 和 alpha 组合。")
 

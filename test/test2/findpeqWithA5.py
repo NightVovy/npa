@@ -54,7 +54,7 @@ def find_best_parameters():
                 F = (((p00 + p10 * cosbeta2) * p10) / ((p01 - p11 * cosbeta2) * p11)) + 1
                 lambda1 = F * math.sqrt(
                     (1 + alpha ** 2 / ((p11 + p10) ** 2 - (p01 - p00) ** 2)) * (
-                        p11 ** 2 + p10 ** 2 - 2 * p11 * p10 * cosbeta2))
+                        p11 ** 2 + p01 ** 2 - 2 * p11 * p01 * cosbeta2))
 
                 # 定义 gamma 变量
                 gamma = cp.Variable((9, 9))

@@ -59,4 +59,14 @@ findpeqWithA5.py: p10=p11=1 (以后都是1)的时候，直接遍历alpha太难�
 2024.11.13
 findpeqWithA52.py: 说实话，不需要A14的lambda，因为p10=p11，没法用左下角求beta了，左下角一定是0。
 是否要用量子测量验证一下结果？因为矩阵的项对应的是<A0A1B0>这样的概率值。注意A0A1B0不是A0,A1,B0简单相乘。
-data_gamma
+data_gamma： 根据data.txt输出矩阵
+data_gammawith no 1.py: 想筛选没有1的矩阵，但是大失败。
+
+2024.11.14
+findpeqWithA53.py:在1的基础上增加的theta的遍历。别忘了alpha是用A5取得的。
+找到了一个巨大bug：lambda1的表达式，p01全写成了p10，你个sb。
+findp5.py / findp5withGamma.py: 修正后的findp.py,以及输出矩阵版本。矩阵终于没有全1了，可喜可贺。
+data/data3.txt: 经过你的努力（不再是星际玩家），数据终于可以拟合了，虽然还是不知道什么是拟合。这个是findp5.py的输出。
+
+data/nihe2.py: 尝试拟合data3.txt的数据。拟合结果请见record.md
+data/nihe2_PR.py / nihe2_SVR.py: 多项式回归和支持向量机。结果见record.md
