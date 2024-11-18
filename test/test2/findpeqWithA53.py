@@ -83,7 +83,9 @@ def process_parameters(p00, p01, p10, p11, theta):
     problem.solve(solver="MOSEK")  # 使用 SDPA 求解
 
     # 检查差值
-    if problem.value is not None:
+    tolerance = 1e-5
+    diff = abs(lambda1 - problem.value)
+    if problem.value is not None and diff < tolerance:
         return (p00, p01, p10, p11, alpha, theta, cosbeta2, lambda1, problem.value, gamma.value)
     return None
 
@@ -92,15 +94,17 @@ def find_best_parameters():
     # 定义初始参数
     p00_start = 0  # 初始 p00 值
     p01_start = 1  # 初始 p01 值
-    p10_start = 1  # 初始 p10 值
+    p10_start = 1  # 固定 p10 值
+    p11_start = 1  # 固定 p11 值
     step = 0.05
     tolerance = 1e-5
 
     # 创建 p00 和 p01 的取值范围
-    p_values = np.arange(0, 1 + step, step)
+    p00_values = np.arange(0, 1 + step, step)
+    p01_values = np.arange(0, 1 + step, step)
 
     # 遍历 theta，保证 theta 范围在 (0, pi/4)，步长为 0.01
-    theta_values = np.arange(0.01, np.pi / 4, 0.01)
+    theta_values = np.arange(0.01, np.pi / 4, 0.02)
 
     # 存储符合条件的结果
     results = []
@@ -109,12 +113,12 @@ def find_best_parameters():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         # 构建待处理的参数组合
         tasks = []
-        for p00 in p_values:
-            for p01 in p_values:
-                if p00 == p01:
-                    continue  # 跳过 p00 和 p01 相等的情况
+        for p00 in p00_values:
+            for p01 in p01_values:
+                # if p00 == p01:
+                #     continue  # 跳过 p00 和 p01 相等的情况?
                 for theta in theta_values:
-                    tasks.append((p00, p01, p10_start, 1, theta))  # p10=p11=1
+                    tasks.append((p00, p01, p10_start, p11_start, theta))  # p10=p11=1
 
         # 使用 executor 来并行化处理所有任务
         results = list(executor.map(lambda params: process_parameters(*params), tasks))

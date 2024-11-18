@@ -70,3 +70,10 @@ data/data3.txt: 经过你的努力（不再是星际玩家），数据终于可�
 
 data/nihe2.py: 尝试拟合data3.txt的数据。拟合结果请见record.md
 data/nihe2_PR.py / nihe2_SVR.py: 多项式回归和支持向量机。结果见record.md
+
+2024.11.15
+findp5withneq.py: 这里的neq是不让p00=p01.结果没返回结果，看来还是只有p00=p01的时候才有返回结果。
+
+2024.11.18
+(不得不说确实龟速)现在开始下面的文件全都在test3文件夹。
+calculateBeta.py: 给出p,q,theta, 用A13计算得到beta值。
