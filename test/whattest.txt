@@ -77,3 +77,16 @@ findp5withneq.py: 这里的neq是不让p00=p01.结果没返回结果，看来还
 2024.11.18
 (不得不说确实龟速)现在开始下面的文件全都在test3文件夹。
 calculateBeta.py: 给出p,q,theta, 用A13计算得到beta值。
+calculateBeta2.py: 遍历p,q,theta. (但是你忘了用A5得到alpha 备注：在第一个版本中修改了)
+
+2024.11.20
+test2/findp5_abs.py: 输出NPA和lambda1之间的差值。
+test3/
+measurement2.py: 输入：beta2, cosmu1, cosmu2, theta, alpha.
+calculateBeta_25.py:  没有在2版本的基础上改，只加入了alpha
+Q: mu1,mu2的取值范围用不用考虑？(0, pi/4)
+
+npaPure2.py: 在源代码的基础上，修改了pij的取值方法，为输入p,q. alpha还是直接输入不是计算。增加了输出那4个期望值。
+
+npa_measure1.py: 尝试整合npa和测量，只在测量结果和gamma矩阵对应上的时候输出p,q,theta,beta2,alpha,cosmu1,cosmu2
+
