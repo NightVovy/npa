@@ -39,6 +39,7 @@ A0B1_measurement = measure_pure_state(psi, A0, B1)
 A1B0_measurement = measure_pure_state(psi, A1, B0)
 A1B1_measurement = measure_pure_state(psi, A1, B1)
 
+# TODO: R U SURE THIS IS CORRECT? WHERE IS P00?
 Iap = alpha * A0_measurement + A0B0_measurement + A0B1_measurement + A1B0_measurement - A1B1_measurement
 
 print("A0 测量结果:", A0_measurement)

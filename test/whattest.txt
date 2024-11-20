@@ -88,5 +88,12 @@ Q: mu1,mu2的取值范围用不用考虑？(0, pi/4)
 
 npaPure2.py: 在源代码的基础上，修改了pij的取值方法，为输入p,q. alpha还是直接输入不是计算。增加了输出那4个期望值。
 
-npa_measure1.py: 尝试整合npa和测量，只在测量结果和gamma矩阵对应上的时候输出p,q,theta,beta2,alpha,cosmu1,cosmu2
+npa_measure1.py: 尝试整合npa和测量，只在测量结果和gamma矩阵对应上的时候输出p,q,theta,beta2,alpha,cosmu1,cosmu2。顺便一提，里面错误有点多，改了但是没确认。
+npa_measure2.py: 整合后发现没有结果，可能性:1. 测量没写对（我不信）2. p,q,theta取值还是不行. 3. 不知道
+                 所以打算输出差值看看差多少。         至于NPA层数，还没想好2层矩阵是什么样子。
+sdp_calculator.py: 懒狗文件，把超长的NPA代码写里面直接调用了。
+beta_calculator.py: same as above, but for beta.
 
+npa_measure_debug.py: 调试非for循环的整合，等把这个写对了，再去改1和2.
+                      现在的问题在于，矩阵看起来正常，但是NPA的值和测量值对不上？
+                      然后measurement1.py里面的Iap也不对。因为没有pij。

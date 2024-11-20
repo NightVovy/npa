@@ -53,11 +53,11 @@ def calculate_beta2(p, q, theta, epsilon=1e-10):
                 mu1 = np.arccos(cos_mu1)
                 mu2 = np.arccos(cos_mu2)
 
-                # 比较 mu1 和 mu2 与 pi/4
-                is_mu1_greater_than_pi_over_4 = mu1 > np.pi / 4
-                is_mu2_greater_than_pi_over_4 = mu2 > np.pi / 4
+                # 比较 mu1 和 mu2 与 pi/2
+                is_mu1_greater_than_pi_over_2 = mu1 > np.pi / 2
+                is_mu2_greater_than_pi_over_2 = mu2 > np.pi / 2
 
-                return beta2, cos_mu1, cos_mu2, alpha, mu1, mu2, is_mu1_greater_than_pi_over_4, is_mu2_greater_than_pi_over_4
+                return beta2, cos_mu1, cos_mu2, alpha, mu1, mu2, is_mu1_greater_than_pi_over_2, is_mu2_greater_than_pi_over_2
     except:
         pass
 
@@ -74,10 +74,10 @@ for p in p_values:
         for theta in theta_values:
             result = calculate_beta2(p, q, theta)
             if result:
-                beta2, cos_mu1, cos_mu2, alpha, mu1, mu2, is_mu1_greater_than_pi_over_4, is_mu2_greater_than_pi_over_4 = result
-                results.append((p, q, theta, beta2, cos_mu1, cos_mu2, alpha, mu1, mu2, is_mu1_greater_than_pi_over_4, is_mu2_greater_than_pi_over_4))
+                beta2, cos_mu1, cos_mu2, alpha, mu1, mu2, is_mu1_greater_than_pi_over_2, is_mu2_greater_than_pi_over_2 = result
+                results.append((p, q, theta, beta2, cos_mu1, cos_mu2, alpha, mu1, mu2, is_mu1_greater_than_pi_over_2, is_mu2_greater_than_pi_over_2))
 
 # 输出符合条件的结果总数
 print(f"\nTotal valid results: {len(results)}")
 for res in results:
-    print(f"p: {res[0]}, q: {res[1]}, theta: {res[2]}, beta2: {res[3]}, cos(mu1): {res[4]}, cos(mu2): {res[5]}, alpha: {res[6]}, mu1: {res[7]}, mu2: {res[8]}, is_mu1_greater_than_pi_over_4: {res[9]}, is_mu2_greater_than_pi_over_4: {res[10]}")
+    print(f"p: {res[0]}, q: {res[1]}, theta: {res[2]}, beta2: {res[3]}, cos(mu1): {res[4]}, cos(mu2): {res[5]}, alpha: {res[6]}, mu1: {res[7]}, mu2: {res[8]}, is_mu1_greater_than_pi_over_2: {res[9]}, is_mu2_greater_than_pi_over_2: {res[10]}")

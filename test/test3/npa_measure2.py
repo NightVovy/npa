@@ -45,6 +45,16 @@ for p in p_values:
                 print(f"Optimal value: {problem_value}")
                 break
 
+            else:
+                if not np.isclose(A0B0, A0B0_measurement, atol=1e-3):
+                    print(f"Difference in A0B0: {A0B0 - A0B0_measurement}")
+                if not np.isclose(A0B1, A0B1_measurement, atol=1e-3):
+                    print(f"Difference in A0B1: {A0B1 - A0B1_measurement}")
+                if not np.isclose(A1B0, A1B0_measurement, atol=1e-3):
+                    print(f"Difference in A1B0: {A1B0 - A1B0_measurement}")
+                if not np.isclose(A1B1, A1B1_measurement, atol=1e-3):
+                    print(f"Difference in A1B1: {A1B1 - A1B1_measurement}")
+
         if found_results:
             break
     if found_results:
