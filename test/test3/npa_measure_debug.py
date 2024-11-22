@@ -23,7 +23,7 @@ def calculate_results(p, q, theta):
 
     # Get measurement results from quantum_measurement function
     A0_measurement, A0B0_measurement, A0B1_measurement, A1B0_measurement, A1B1_measurement = quantum_measurement(
-        beta2, cos_mu1, cos_mu2, theta, alpha)
+        beta2, cos_mu1, cos_mu2, theta)
 
     # Extract gamma matrix values
     A0B0 = gamma_matrix[1, 3]

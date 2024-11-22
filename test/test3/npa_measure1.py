@@ -27,7 +27,7 @@ for p in p_values:
             gamma_matrix, problem_value = calculate_sdp(p, q, alpha)
 
             # Get measurement results from quantum_measurement function
-            A0_measurement, A0B0_measurement, A0B1_measurement, A1B0_measurement, A1B1_measurement= quantum_measurement(beta2, cos_mu1, cos_mu2, theta, alpha)
+            A0_measurement, A0B0_measurement, A0B1_measurement, A1B0_measurement, A1B1_measurement= quantum_measurement(beta2, cos_mu1, cos_mu2, theta)
 
             # Extract gamma matrix values
             A0B0 = gamma_matrix[1, 3]

@@ -97,3 +97,11 @@ beta_calculator.py: same as above, but for beta.
 npa_measure_debug.py: 调试非for循环的整合，等把这个写对了，再去改1和2.
                       现在的问题在于，矩阵看起来正常，但是NPA的值和测量值对不上？
                       然后measurement1.py里面的Iap也不对。因为没有pij。
+
+2024.11.22
+measurement2_test.py: 态改成bell态，测量用的书里的测量，这个原版代码到底对不对。   是对的。
+beta_calculator_test.py: 发现sinmu2八成不是负的（因为从上面的代码验证得到，A1B1的测量结果不是负的），验证一下公式求的带负号的sinmu2.....
+                         呃，你应该手动加一个负号才对，因为是开平方得到的sin。
+                         Original sin_mu1: 0.8297481737254854, New sin_mu1: 0.8297481737254855
+                         Original sin_mu2: 0.5468862510172947, New sin_mu2: -0.5468862510172947(我就知道)
+
