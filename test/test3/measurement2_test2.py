@@ -14,7 +14,7 @@ def measure_pure_state(psi, A, B):
 def quantum_measurement(beta2, cos_mu1, cos_mu2, theta):
     # 使用三角函数计算 sin(mu1) 和 sin(mu2)
     sin_mu1 = np.sqrt(1 - cos_mu1 ** 2)  # 通过 cos(mu1) 计算 sin(mu1)
-    sin_mu2 = np.sqrt(1 - cos_mu2 ** 2)  # 通过 cos(mu2) 计算 sin(mu2)
+    sin_mu2 = - np.sqrt(1 - cos_mu2 ** 2)  # 通过 cos(mu2) 计算 sin(mu2)
 
     # 定义量子测量算符
     A0 = sigma_z

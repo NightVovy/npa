@@ -42,6 +42,7 @@ def calculate_results(p, q, theta):
 
     # Output the results
     print(f"Results for p={p}, q={q}, theta={theta}:")
+    print(f"p00={p00}, p01={p01}, p10={p10}, p11={p11}")
     print(f"beta2={beta2}, cos_mu1={cos_mu1}, cos_mu2={cos_mu2}, sin_mu1={sin_mu1}, sin_mu2={sin_mu2}, alpha={alpha}")
     print(f"Gamma matrix:\n{gamma_matrix}")
     print(f"Problem value: {problem_value}")        # TODO: NOT SAME?
@@ -58,9 +59,9 @@ def calculate_results(p, q, theta):
 
 
 # Example usage: manually input p, q, and theta values
-p = 0.5
-q = 0.6
-theta = 0.7
+p = 0.2
+q = 0.5
+theta = 0.78
 # theta max 0.7853981633974483
 
 calculate_results(p, q, theta)
