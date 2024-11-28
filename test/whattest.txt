@@ -112,3 +112,15 @@ npa_measure2_6.py: 从上面那个代码得出q = 0.5 only，所以只遍历p和
 
 2024.11.26
 需要把npa_measure2_6.py生成的2号结果（最后为data2.txt）看一下然后拟合一下，关键就是p<0.5这部分和theta之间的关系。
+
+2024.11.28
+我也不想创建那么多文件夹。
+test4_npamatrix: 开始尝试构造任意层的npa矩阵。
+里面的函数都不是正式功能。
+/function1: 功能1，构造根据层数的测量算子。 具体功能请参考代码.md
+  generate_operators1.py: 还是不对，待修改。
+  stringtest.py: 根据层数layer，递归生成测量算子字符串组合，但是没排序没优化。
+  stringtest2.py: 尝试优化字符串。已经优化+排序过了。----------------------------用这个
+  segment.py: 尝试将测量算子字符串分割成I,A0,B0,A1,B1,5个部分。
+  matrixtest.py: 尝试拼接成矩阵。
+  matrixtest.py: 尝试找索引矩阵的项出现次数和相同项的位置。除了I。如果出现任何问题，都是没引用stringtest2.py的函数。
