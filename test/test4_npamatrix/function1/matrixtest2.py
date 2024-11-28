@@ -74,7 +74,7 @@ def record_matrix_elements(matrix):
     for i in range(n):
         for j in range(i, n):  # 只处理上三角部分
             element = matrix[i][j]
-            if element != 'I':  # 如果是 'I'，跳过
+            if element != 'I' and element is not None:  # 如果是 'I'，跳过
                 element_info[element]['count'] += 1
                 element_info[element]['positions'].append([i, j])
 
@@ -86,6 +86,9 @@ def record_matrix_elements(matrix):
         print(f"Element: {element}")
         print(f"  Count: {info['count']}")
         print(f"  Positions: {info['positions']}")
+
+        # 返回记录的字典
+    return element_info
 
 
 # 打印矩阵，确保每行元素对齐
@@ -106,9 +109,10 @@ layer = 2  # 可根据需求修改层数
 S = generate_string_sets(layer, S1)  # 使用从 stringtest2.py 导入的函数
 
 # 输出生成的上三角矩阵
-print(f"S{layer} Upper Triangle Matrix:")
+# print(f"S{layer} Upper Triangle Matrix:")
 matrix = create_upper_triangle_matrix(S)
-print_matrix(matrix)
+
+# print_matrix(matrix)
 
 # 记录矩阵中的元素、出现次数和位置，并输出
 record_matrix_elements(matrix)

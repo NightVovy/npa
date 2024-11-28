@@ -77,8 +77,8 @@ def generate_string_sets(layer, S1):
 
 
 # 获取集合 S2 和 S3，并整理
-S2 = generate_string_sets(2, S1)
-S3 = generate_string_sets(3, S1)
+# S2 = generate_string_sets(2, S1)
+# S3 = generate_string_sets(3, S1)
 
-print("S2:", S2)
-print("S3:", S3)
+# print("S2:", S2)
+# print("S3:", S3)
