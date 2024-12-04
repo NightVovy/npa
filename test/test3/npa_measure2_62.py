@@ -10,7 +10,7 @@ sigma_x = np.array([[0, 1], [1, 0]])  # σx
 
 # Main loop to search for valid results
 results = []
-p_values = np.arange(0.05, 0.5, 0.05)
+p_values = np.arange(0.05, 1.0, 0.05)
 q_values = np.arange(0.05, 1.0, 0.05)
 theta_values = np.arange(0.1, np.pi / 4, 0.01)
 
