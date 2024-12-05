@@ -26,6 +26,7 @@ def calculate_results(p, q, theta):
         beta2, cos_mu1, cos_mu2, theta)
 
     # Extract gamma matrix values
+    A0 = gamma_matrix[0, 1]
     A0B0 = gamma_matrix[1, 3]
     A0B1 = gamma_matrix[1, 4]
     A1B0 = gamma_matrix[2, 3]
@@ -47,9 +48,9 @@ def calculate_results(p, q, theta):
     print(f"Gamma matrix:\n{gamma_matrix}")
     print(f"Problem value: {problem_value}")        # TODO: NOT SAME?
     print(f"Iap: {Iap}")
-    print(f"A0B0={A0B0}, A0B1={A0B1}, A1B0={A1B0}, A1B1={A1B1}")
+    print(f"A0={A0},A0B0={A0B0}, A0B1={A0B1}, A1B0={A1B0}, A1B1={A1B1}")
     print(
-        f"A0B0_measurement={A0B0_measurement}, A0B1_measurement={A0B1_measurement}, A1B0_measurement={A1B0_measurement}, A1B1_measurement={A1B1_measurement}")
+        f"A0_measurement={A0_measurement}, A0B0_measurement={A0B0_measurement}, A0B1_measurement={A0B1_measurement}, A1B0_measurement={A1B0_measurement}, A1B1_measurement={A1B1_measurement}")
 
     # Check and print the differences
     print(f"Difference in A0B0: {A0B0 - A0B0_measurement}")
@@ -59,9 +60,9 @@ def calculate_results(p, q, theta):
 
 
 # Example usage: manually input p, q, and theta values
-p = 0.2
+p = 0.4
 q = 0.5
-theta = 0.78
+theta = 0.6
 # theta max 0.7853981633974483
 
 calculate_results(p, q, theta)

@@ -94,7 +94,7 @@ npa_measure2.py: 整合后发现没有结果，可能性:1. 测量没写对（�
 sdp_calculator.py: 懒狗文件，把超长的NPA代码写里面直接调用了。
 beta_calculator.py: same as above, but for beta.
 
-npa_measure_debug.py: 调试非for循环的整合，等把这个写对了，再去改1和2.
+npa_measure_debug.py: 调试非for循环的整合，等把这个写对了，再去改1和2.    （事实证明只有输入没有for循环的代码很有用）
                       现在的问题在于，矩阵看起来正常，但是NPA的值和测量值对不上？
                       然后measurement1.py里面的Iap也不对。因为没有pij。
 
@@ -132,3 +132,7 @@ npaPure2.py: 我不敢相信sdptest.py的结果是2，而不是2倍根号2，所
     gamma[2, 3]: 0.7071067420394145
     gamma[2, 4]: -0.7071067417895329   这才是目标值。
         把stringtest2.py和matrixtest2.py的一些print都注释掉了，这样sdptest.py能少点重复输出
+
+2024.12.4
+先不管test4了。
+npaPure2_bianli.py: 顾名思义，遍历p,q,alpha（没错这里是alpha），然后矩阵不对劲的时候不输出。
