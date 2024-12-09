@@ -1,9 +1,9 @@
 import cvxpy as cp
 
 # Given p, q, alpha
-p = 0.2  # Example value for p
-q = 0.6  # Example value for q
-alpha = 1.28  # Given alpha value
+p = 0.55  # Example value for p
+q = 0.45  # Example value for q
+alpha = 0.1  # Given alpha value
 
 # Define parameters based on p and q
 p00 = p * q
@@ -63,6 +63,15 @@ objective = cp.Maximize(
 problem = cp.Problem(objective, constraints)
 problem.solve(solver="SDPA")  # Use "SDPA" or "MOSEK" as appropriate
 
+# Calculate Iap
+A0 = gamma.value[0, 1]
+A0B0 = gamma.value[1, 3]
+A0B1 = gamma.value[1, 4]
+A1B0 = gamma.value[2, 3]
+A1B1 = gamma.value[2, 4]
+
+Iap = alpha * A0 + p00 * A0B0 + p01 * A0B1 + p10 * A1B0 - p11 * A1B1
+
 # Output the values of the gamma matrix in the required format
 print(f"A0B0={gamma.value[1, 3]}")
 print(f"A0B1={gamma.value[1, 4]}")
@@ -75,3 +84,6 @@ print(gamma.value)
 
 # Print the optimal value of the objective
 print(f"Optimal value: {problem.value}")
+
+# Print the value of Iap
+print(f"Iap = {Iap}")

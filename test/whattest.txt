@@ -125,7 +125,7 @@ test4_npamatrix: 开始尝试构造任意层的npa矩阵。
         matrixtest.py: 尝试拼接成矩阵。
         matrixtest2.py: 尝试找索引矩阵的项出现次数和相同项的位置。除了I。如果出现任何问题，都是没引用stringtest2.py的函数。 还是直接用的layer=2.---------------用这个，暂时
         sdptest.py: 尝试构造NPA矩阵并用SDP求解。
-npaPure2.py: 我不敢相信sdptest.py的结果是2，而不是2倍根号2，所以又写了个纯粹的1+AB层的npa。
+test4/npaPure2.py: 我不敢相信sdptest.py的结果是2，而不是2倍根号2，所以又写了个纯粹的1+AB层的npa。
     Optimal value: 2.8284269678163128
     gamma[1, 3]: 0.7071067422855023
     gamma[1, 4]: 0.7071067417018632
@@ -135,6 +135,19 @@ npaPure2.py: 我不敢相信sdptest.py的结果是2，而不是2倍根号2，所
 
 2024.12.4
 先不管test4了。
-npaPure2_bianli.py: 顾名思义，遍历p,q,alpha（没错这里是alpha），然后矩阵不对劲的时候不输出。
+test3/pqalpha/npaPure2_bianli.py: 顾名思义，遍历p,q,alpha（没错这里是alpha），然后矩阵不对劲的时候不输出。
 输出结果在npa_bianli.txt里面
+test3/pqalpha: 顾名思义2，不用theta而是alpha代入了。
+                TODO： 1. 使用p,q,alpha计算theta, beta2, 以及公式涉及到的mu1,mu2
+                      2. 将计算好的参数代入：A14, 原方程， NPA。
+                      Q： beta2求不出来合适的结果。
+test3/npaPure2.py: 请与上面test4文件夹的作区分。
+                   只输入p,q,alpha，运行npa。
+calculate_beta_withalpha.py: 呃，算不出来合适的beta2. 太小了！
 
+2024.12.9
+calculate_beta2.py: 又写了一个算theta和beta2的。怎么这个看起来就没问题呢？
+                    加入了额外计算mu1，mu1范围在[0,pi/2]就行。
+
+calculate_all.py: 计算theta和beta2后，计算sinmu1,sinmu2,cosmu1,cosmu2.
+p = 0.55, q = 0.6, alpha = 0.1

@@ -12,7 +12,7 @@ results = []
 valid_combinations = []  # To store the valid (p, q, alpha) combinations
 
 # Open the file in write mode
-with open('npa_bianli.txt', 'w') as f:
+with open('../npa_bianli.txt', 'w') as f:
     # Save the original stdout (console output)
     original_stdout = sys.stdout
     # Redirect stdout to the file
