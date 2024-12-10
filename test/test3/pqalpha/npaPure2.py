@@ -1,8 +1,8 @@
 import cvxpy as cp
 
 # Given p, q, alpha
-p = 0.55  # Example value for p
-q = 0.45  # Example value for q
+p = 0.45  # Example value for p
+q = 0.4  # Example value for q
 alpha = 0.1  # Given alpha value
 
 # Define parameters based on p and q

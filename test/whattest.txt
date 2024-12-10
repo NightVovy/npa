@@ -151,3 +151,6 @@ calculate_beta2.py: 又写了一个算theta和beta2的。怎么这个看起来�
 
 calculate_all.py: 计算theta和beta2后，计算sinmu1,sinmu2,cosmu1,cosmu2.
 p = 0.55, q = 0.6, alpha = 0.1
+
+2024.12.10
+calculate_all2.py: 尝试在计算theta,beta2的时候不要过于接近0. 因为要修改的内容太多所以单独写了一个文件。     （这就和calculate_beta_withalpha.py遇到的问题一样了啊难绷）
