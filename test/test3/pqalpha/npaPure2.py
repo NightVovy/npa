@@ -73,6 +73,7 @@ A1B1 = gamma.value[2, 4]
 Iap = alpha * A0 + p00 * A0B0 + p01 * A0B1 + p10 * A1B0 - p11 * A1B1
 
 # Output the values of the gamma matrix in the required format
+print(f"A0={gamma.value[0, 1]}")
 print(f"A0B0={gamma.value[1, 3]}")
 print(f"A0B1={gamma.value[1, 4]}")
 print(f"A1B0={gamma.value[2, 3]}")
