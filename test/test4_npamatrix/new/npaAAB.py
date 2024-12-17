@@ -4,6 +4,7 @@ import cvxpy as cp
 
 # Define variables
 gamma = cp.Variable((11, 11),hermitian=True)  # Declare gamma as hermitian
+# TODO: 13X13
 
 # Define constraints
 constraints = [

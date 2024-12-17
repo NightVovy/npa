@@ -8,7 +8,7 @@ import cvxpy as cp
 # p11 = 0.95          # Set p11 value
 
 # Define variables
-gamma = cp.Variable((9, 9))  # Declare gamma as hermitian
+gamma = cp.Variable((9, 9),hermitian=True)  # Declare gamma as hermitian
 
 # Define constraints
 constraints = [
@@ -55,8 +55,9 @@ constraints = [
 # p11_param = cp.Parameter(value=p11)
 
 # Objective function
+# 目标函数（确保它是实数值的）
 objective = cp.Maximize(
-    gamma[1, 3] + gamma[1, 4] +  gamma[2, 3] - gamma[2, 4]
+    cp.real(gamma[1, 3]) + cp.real(gamma[1, 4]) + cp.real(gamma[2, 3]) - cp.real(gamma[2, 4])
 )
 
 # Define and solve the problem
