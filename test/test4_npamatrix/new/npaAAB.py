@@ -3,7 +3,7 @@ import math
 import cvxpy as cp
 
 # Define variables
-gamma = cp.Variable((11, 11),hermitian=True)  # Declare gamma as hermitian
+gamma = cp.Variable((13, 13),hermitian=True)  # Declare gamma as hermitian
 # TODO: 13X13
 
 # Define constraints
@@ -58,6 +58,27 @@ constraints = [
 #     gamma[1, 10] == gamma[2, 4],  # 2nd row, 11th column == 3rd row, 5th column A1B1
 #     gamma[2, 9] == gamma[1, 3],  # 3rd row, 10th column == 2nd row, 4th column A0B0
 #     gamma[2, 10] == gamma[3, 4],  # 3rd row, 11th column == 4th row, 5th column A0B1
+    # TODO: 13X13
+# New additional constraints
+    gamma[3, 11] == gamma[4, 12],
+    gamma[5, 11] == gamma[6, 12],
+    gamma[7, 11] == gamma[8, 12],
+    # not sure
+    gamma[1, 11] == gamma[1, 9],
+    gamma[1, 12] == gamma[1, 10],
+    gamma[2, 11] == gamma[2, 9],
+    gamma[2, 12] == gamma[2, 10],
+
+    gamma[3, 10] == gamma[3, 12],
+    gamma[4, 9] == gamma[4, 11],
+    gamma[5, 10] == gamma[5, 12],
+    gamma[6, 9] == gamma[6, 11],
+    gamma[7, 10] == gamma[7, 12],
+    gamma[8, 9] == gamma[8, 11],
+
+    gamma[9, 10] == gamma[11, 12],
+    gamma[9, 11] == gamma[10, 12],
+    gamma[10, 11] == gamma[9, 12],
 ]
 
 
