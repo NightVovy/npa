@@ -160,7 +160,12 @@ test3/pqalpha/measurement/theta_calculator.py: ...
 2024.12.17
 test4_npamatrix/new: 想写一个新的矩阵，包括：1+ab+aa， 用投影算子，etc。
 test4_npamatrix/new/npaAAB.py: 1+ab+aab的矩阵，
-test4_npamatrix/new/npaPure3.py:
+test4_npamatrix/new/npaPure3.py: （别看了你写不出来的）
+
+2024.12.19
+关于npa验证，请使用vscode的julia代码。想照搬请改天再说。
+完了又新建文件夹了。
+test/new: 从这个文件夹开始，没有npa代码，只有验证理论值。
 
 
 
