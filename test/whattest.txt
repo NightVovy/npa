@@ -162,11 +162,13 @@ test4_npamatrix/new: 想写一个新的矩阵，包括：1+ab+aa， 用投影算
 test4_npamatrix/new/npaAAB.py: 1+ab+aab的矩阵，
 test4_npamatrix/new/npaPure3.py: （别看了你写不出来的）
 
-2024.12.19
+2024.12.19-20
 关于npa验证，请使用vscode的julia代码。想照搬请改天再说。
 完了又新建文件夹了。
 test/new: 从这个文件夹开始，没有npa代码，只有验证理论值。
-
+test/new/ezcalculate.py: 计算theta=0.5, theta!=0.5时pij=1, p00=p01=xxx + p10=p11=1【有问题】, q=0.5, q!=0.5的各种情况的理论值。
+test/new/generateJuliaText.py: 懒人使用p,q时生成julia代码的工具。
+test/new/calculateThetaBeta.py: 功能和calculate_all2.py冲突，建议只保留一个。     这个要用来计算A14，还得改。
 
 
 
