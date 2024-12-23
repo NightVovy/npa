@@ -98,9 +98,9 @@ def calculate_mu1_mu2(beta2, theta, p, q):
 
 
 # 示例参数
-p = 0.45
-q = 0.4
-alpha = 0.1
+p = 0.5
+q = 0.5
+alpha = 0.44
 
 # 输出参数范围
 print(f"参数范围：")
@@ -135,7 +135,23 @@ if valid_solutions:
         print(f"sin(beta2): {np.sin(beta2)}, sin(2*theta): {np.sin(2 * theta)}")
         print(f"cos(mu1): {cos_mu1}, sin(mu1): {sin_mu1}, mu1: {mu1} radians")
         print(f"cos(mu2): {cos_mu2}, sin(mu2): {sin_mu2}, mu2: {mu2} radians")
-        print(f"λ2 (lambda2) = {lambda2}")
-        print(f"λ1 (lambda1) = {lambda1}")
+        print(f"λ2 (lambda2)A14 bottom = {lambda2}")
+        print(f"λ1 (lambda1)A14 top = {lambda1}")
 else:
     print("未找到有效的解")
+
+
+# def generate_text(p, q, alpha):
+#     # 根据 p 和 q 计算 p00, p01, p10, p11，并保留5位小数
+#     p00 = round(p * q, 5)
+#     p01 = round(p * (1 - q), 5)
+#     p10 = round((1 - p) * q, 5)
+#     p11 = round((1 - p) * (1 - q), 5)
+#
+#     # 根据 alpha、p00、p01、p10、p11 和 layer 生成最终的文字
+#     text = f'npa_max({alpha:.5f} * A1 + {p00:.5f} * A1 * B1 + {p01:.5f} * A1 * B2 + {p10:.5f} * A2 * B1 - {p11:.5f} * A2 * B2, "1 + A B + A^2 B")'
+#
+#     return text
+#
+# result_1 = generate_text(p, q, alpha)
+# print(result_1)

@@ -169,6 +169,9 @@ test/new: 从这个文件夹开始，没有npa代码，只有验证理论值。
 test/new/ezcalculate.py: 计算theta=0.5, theta!=0.5时pij=1, p00=p01=xxx + p10=p11=1【有问题】, q=0.5, q!=0.5的各种情况的理论值。
 test/new/generateJuliaText.py: 懒人使用p,q时生成julia代码的工具。
 test/new/calculateThetaBeta.py: 功能和calculate_all2.py冲突，建议只保留一个。     这个要用来计算A14，还得改。
+                                这个改成了输入pij而不是p,q.
 
+2024.12.23
+tired.
 
 
