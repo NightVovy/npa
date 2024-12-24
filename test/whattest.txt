@@ -173,5 +173,8 @@ test/new/calculateThetaBeta.py: 功能和calculate_all2.py冲突，建议只保�
 
 2024.12.23
 tired.
+calculateall2.py有遍历版本吗？
+
+calculate_all2.py是基于p*q的，calculateThetaBeta.py是基于pij的。（为什么他知道我要说什么）
 
 

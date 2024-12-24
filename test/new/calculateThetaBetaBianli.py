@@ -82,51 +82,35 @@ def calculate_mu1_mu2(beta2, theta, p00, p01, p10, p11):
     return cos_mu1, sin_mu1, mu1, cos_mu2, sin_mu2, mu2
 
 
-# 示例参数
-p00 = 0.4
-p01 = 0.6
-p10 = 0.3
-p11 = 0.2
-alpha = 0.88
+# 打开输出文件
+with open("lilunzhiBianli.txt", "w") as file:
+    # 遍历所有的参数组合
+    for alpha in np.arange(0.1, 2.1, 0.1):
+        for p00 in np.arange(0.1, 1.0, 0.1):
+            for p01 in np.arange(0.1, 1.0, 0.1):
+                for p10 in np.arange(0.1, 1.0, 0.1):
+                    for p11 in np.arange(0.1, 1.0, 0.1):
+                        # 求解 beta2 和 theta
+                        valid_solutions = solve_beta2_theta(p00, p01, p10, p11, alpha, min_threshold=0.1)
 
-# 输出参数范围
-print(f"参数范围：")
-print(f"theta 的范围在 (0, {np.pi / 4}) radians")
-print(f"beta2, mu1, mu2 的范围在 [0, {np.pi / 2}] radians")
+                        if valid_solutions:
+                            for beta2, theta in valid_solutions:
+                                # 使用解出的 beta2 和 theta 计算 cos(mu1), sin(mu1), mu1, cos(mu2), sin(mu2), mu2
+                                cos_mu1, sin_mu1, mu1, cos_mu2, sin_mu2, mu2 = calculate_mu1_mu2(beta2, theta, p00, p01, p10, p11)
 
-# 求解 beta2 和 theta
-valid_solutions = solve_beta2_theta(p00, p01, p10, p11, alpha, min_threshold=0.1)
+                                # 计算 lambda2 值
+                                lambda2 = np.sqrt((p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2) + \
+                                          np.sqrt((p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2) + \
+                                          alpha * np.cos(2 * theta)
 
-# 如果找到有效解
-if valid_solutions:
-    for beta2, theta in valid_solutions:
-        # 使用解出的 beta2 和 theta 计算 cos(mu1), sin(mu1), mu1, cos(mu2), sin(mu2), mu2
-        cos_mu1, sin_mu1, mu1, cos_mu2, sin_mu2, mu2 = calculate_mu1_mu2(beta2, theta, p00, p01, p10, p11)
+                                lambda1 = ((p00 + p10 * np.cos(beta2)) * cos_mu1 + (p01 - p11 * np.cos(beta2)) * cos_mu2) + \
+                                          ((p10 * np.sin(beta2)) * sin_mu1 - (p11 * np.sin(beta2)) * sin_mu2) * np.sin(2 * theta) + \
+                                          alpha * np.cos(2 * theta)
 
-        # 计算 lambda2 值
-        lambda2 = np.sqrt((p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2) + \
-                  np.sqrt((p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2) + \
-                  alpha * np.cos(2 * theta)
+                                # 输出结果
+                                file.write(f"alpha={alpha}, p00={p00}, p01={p01}, p10={p10}, p11={p11}. result = {lambda1}\n")
+                        else:
+                            # 如果没有有效解，输出默认值99999
+                            file.write(f"alpha={alpha}, p00={p00}, p01={p01}, p10={p10}, p11={p11}. result = 99999\n")
 
-        lambda1 = ((p00 + p10 * np.cos(beta2)) * cos_mu1 + (p01 - p11 * np.cos(beta2)) * cos_mu2) + \
-                  ((p10 * np.sin(beta2)) * sin_mu1 - (p11 * np.sin(beta2)) * sin_mu2) * np.sin(2 * theta) + \
-                  alpha * np.cos(2 * theta)
-
-        # 输出结果
-        print(f"beta2: {beta2} radians, theta: {theta} radians")
-        print(f"sin(beta2): {np.sin(beta2)}, sin(2*theta): {np.sin(2 * theta)}")
-        print(f"cos(mu1): {cos_mu1}, sin(mu1): {sin_mu1}, mu1: {mu1} radians")
-        print(f"cos(mu2): {cos_mu2}, sin(mu2): {sin_mu2}, mu2: {mu2} radians")
-        print(f"λ2 (lambda2)A14 bottom = {lambda2}")
-        print(f"λ1 (lambda1)A14 top = {lambda1}")
-else:
-    print("未找到有效的解")
-
-# def generate_second_text(p00_input, p01_input, p10_input, p11_input, alpha):
-#     # 根据输入的 p00_input, p01_input, p10_input, p11_input 和 alpha 生成新的文字
-#     text = f'npa_max({alpha:.5f} * A1 + {p00_input} * A1 * B1 + {p01_input} * A1 * B2 + {p10_input} * A2 * B1 - {p11_input} * A2 * B2, "1 + A B + A^2 B")'
-#
-#     return text
-#
-# result_2 = generate_second_text(p00, p01, p10, p11, alpha)
-# print(result_2)
+print("所有计算已完成，结果已保存到 'lilunzhiBianli.txt' 文件中。")
