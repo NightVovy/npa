@@ -82,12 +82,26 @@ def calculate_mu1_mu2(beta2, theta, p00, p01, p10, p11):
     return cos_mu1, sin_mu1, mu1, cos_mu2, sin_mu2, mu2
 
 
+def calculate_rhs_I_LHS(beta2, p00, p01, p10, p11, alpha):
+    # 计算右侧的公式，即 I_LHS <= sqrt((alpha + p00 + p01 + (p10 - p11) * cos(beta))^2 + (p10 - p11)^2 * sin^2(beta))
+    cos_beta = np.cos(beta2)
+    sin_beta = np.sin(beta2)
+
+    rhs = np.sqrt(
+        (alpha + p00 + p01 + (p10 - p11) * cos_beta) ** 2 +
+        (p10 - p11) ** 2 * sin_beta ** 2
+    )
+    return rhs
+
+
+
 # 示例参数
-p00 = 0.4
-p01 = 0.6
-p10 = 0.3
-p11 = 0.2
-alpha = 0.88
+alpha = 0.7
+p00 = 0.7
+p01 = 0.9
+p10 = 0.8
+p11 = 0.7
+
 
 # 输出参数范围
 print(f"参数范围：")
@@ -112,6 +126,9 @@ if valid_solutions:
                   ((p10 * np.sin(beta2)) * sin_mu1 - (p11 * np.sin(beta2)) * sin_mu2) * np.sin(2 * theta) + \
                   alpha * np.cos(2 * theta)
 
+        # 计算 I_LHS 的右侧值
+        rhs_I_LHS = calculate_rhs_I_LHS(beta2, p00, p01, p10, p11, alpha)
+
         # 输出结果
         print(f"beta2: {beta2} radians, theta: {theta} radians")
         print(f"sin(beta2): {np.sin(beta2)}, sin(2*theta): {np.sin(2 * theta)}")
@@ -119,6 +136,7 @@ if valid_solutions:
         print(f"cos(mu2): {cos_mu2}, sin(mu2): {sin_mu2}, mu2: {mu2} radians")
         print(f"λ2 (lambda2)A14 bottom = {lambda2}")
         print(f"λ1 (lambda1)A14 top = {lambda1}")
+        print(f"Right-hand side of I_LHS <=: {rhs_I_LHS}")
 else:
     print("未找到有效的解")
 

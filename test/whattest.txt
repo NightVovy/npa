@@ -177,4 +177,7 @@ calculateall2.py有遍历版本吗？
 
 calculate_all2.py是基于p*q的，calculateThetaBeta.py是基于pij的。（为什么他知道我要说什么）
 
+2024.12.24
+test/new/calculateThetaBetaBianli.py: 拿来结合julia的NPA测试的，输出A14.
+test/new/comparetxt.py:理论值和实际值。
 
