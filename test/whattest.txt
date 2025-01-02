@@ -181,3 +181,10 @@ calculate_all2.py是基于p*q的，calculateThetaBeta.py是基于pij的。（为
 test/new/calculateThetaBetaBianli.py: 拿来结合julia的NPA测试的，输出A14.
 test/new/comparetxt.py:理论值和实际值。
 
+2025.1.2
+test/new/遍历with更小步长.py：你就是闲的。当然我劝你别运行。
+test/new/遍历withp10=p11=1.py：因为开始的时候发现p00=p01=beta的时候好像不满足全部的p00,p01取值，还是得判断alpha和p00的取值范围。
+                                结果在lilunBianlip10p111.txt。
+test/new/abc.py:我应该使用abc来对比的吧.....谁知道呢。就这个生成了“理论实际.txt”. 所以没用上comparetxt.py【老问题，又全被跳过了难绷】
+
+

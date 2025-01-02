@@ -69,5 +69,5 @@ def compare_results(lilunzhi_file, nparesult_file, output_file):
 
 if __name__ == "__main__":
     # 调用比较函数，传入文件路径
-    compare_results("lilunzhiBianli.txt", "nparesult.txt", "lilunshijip10p111.txt")
+    compare_results("lilunBianlip10p111.txt", "nparesultp10p111.txt", "lilunshijip10p111.txt")
 # from 10843
