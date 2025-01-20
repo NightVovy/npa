@@ -96,11 +96,11 @@ def calculate_rhs_I_LHS(beta2, p00, p01, p10, p11, alpha):
 
 
 # 示例参数
-alpha = 0.7
-p00 = 0.7
+alpha = 0.2
+p00 = 0.4
 p01 = 0.9
 p10 = 0.8
-p11 = 0.7
+p11 = 0.4
 
 
 # 输出参数范围

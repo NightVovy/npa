@@ -188,3 +188,56 @@ test/new/遍历withp10=p11=1.py：因为开始的时候发现p00=p01=beta的时�
 test/new/abc.py:我应该使用abc来对比的吧.....谁知道呢。就这个生成了“理论实际.txt”. 所以没用上comparetxt.py【老问题，又全被跳过了难绷】
 
 
+2025.1.14
+1. p00>=p01>=p10>=p11, p11 = min pij
+2. beta2为已知值，满足1SDI前提（之前的都是DI也就是让beta2未知）
+test/new2/测试pij.py: 以0.1步长，输出范围(0,1]的pij。
+
+--------------------------------------
+IQ:
+    理论值： lambda max
+    实际值： NPA
+ILHS: 理论1的公式
+ILHV: alpha + p00 + p01 + p10 - p11
+--------------------------------------
+lambda: \[
+\lambda = \sqrt{(p_{00} + p_{10} \cos \beta_2)^2 + (p_{10} \sin \beta_2 \sin 2\theta)^2} + \sqrt{(p_{01} - p_{11} \cos \beta_2)^2 + (p_{11} \sin \beta_2 \sin 2\theta)^2}
++ \left(\frac{p_{10}^2}{\sqrt{(p_{00} + p_{10} \cos \beta_2)^2 + (p_{10} \sin \beta_2 \sin 2\theta)^2}} + \frac{p_{11}^2}{\sqrt{(p_{01} - p_{11} \cos \beta_2)^2 + (p_{11} \sin \beta_2 \sin 2\theta)^2}}\right) \sin^2 \beta_2 \cos^2 2\theta
+\]
+
+import math
+
+def lambda_expression(p00, p01, p10, p11, beta2, theta):
+    term1 = math.sqrt((p00 + p10 * math.cos(beta2))**2 + (p10 * math.sin(beta2) * math.sin(2 * theta))**2)
+    term2 = math.sqrt((p01 - p11 * math.cos(beta2))**2 + (p11 * math.sin(beta2) * math.sin(2 * theta))**2)
+
+    alpha_term1 = p10**2 / math.sqrt((p00 + p10 * math.cos(beta2))**2 + (p10 * math.sin(beta2) * math.sin(2 * theta))**2)
+    alpha_term2 = p11**2 / math.sqrt((p01 - p11 * math.cos(beta2))**2 + (p11 * math.sin(beta2) * math.sin(2 * theta))**2)
+
+    alpha = (alpha_term1 + alpha_term2) * (math.sin(beta2)**2) * (math.cos(2 * theta)**2)
+
+    return term1 + term2 + alpha
+
+-----------------------------------------------------------
+new2/bianliLambda1.py: 遍历p00,p01,p10,p11,输出lambda1的值。lambda1就是上面这个公式，把A5的alpha代入里面。
+                        需要注意的是，这次遍历theta，指定beta2. （前者小于pi/4， 后者小于pi/2）
+                        暂定beta2为30,45,60度。
+                        输出LHS=理论1公式。
+                        如果lambda（IQ）小于LHS，标签为1. lambdaLessThanLhs=1，并输出差值lhs-lambda。（标签为0时此数值为-1）
+                        输出LHV = 经典值。
+                        如果lambda小于LHV，标签为1. lambdaLessThanLhv=1，并输出差值lhv-lambda。（标签为0时此数值为-1）
+输出案例：
+p00=1.0, p01=1.0, p10=1.0, p11=0.6, beta2=0.79, theta=0.10, lambda=2.8840, alpha=0.5893, lhs=2.8860, lhv=2.9893,
+lambdaLessThanLhs=1, lambdaLessThanLhv=1, lhs-lambda=0.001985789642386049, lhv-lambda=0.10524963765795947
+（所有结果都在bianliLambda11.txt里面，然后代码已经恢复到不输出txt的版本。）
+（最新加入LHV对比的在bianliLambda12.txt）----不一定啊
+（最新加入LHS,LHV差值的在bianliLambda13.txt）
+
+new2/bianliLambdaPrint.py: 实际上就是bianliLambda1.py但是打印，因为懒得先改成打印后还原回去了。
+
+----------------------------------------------------------------------------------------------------------------------
+2025.1.20
+test/new3matrix: 计算Bell算子矩阵，然后找最大特征值，验证特征向量是cos00+sin11
+test/new3matrix/belloperatormatrix.py: 生成Bell算子矩阵
+        beta2 in (30--0.52359877559 45--0.78539816339 60--1.0471975512)
+        theta in 0 - 0.78539816339
