@@ -31,7 +31,7 @@ def construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta):
     sigma_X = np.array([[0, 1], [1, 0]])
 
     # 使用张量积构造矩阵 A0, A1, B0, B1
-    A0 = np.cos(beta1) * sigma_Z + np.sin(beta1) * sigma_X  # 2x2 矩阵
+    A0 = np.cos(beta1) * sigma_Z + np.sin(beta1) * sigma_X # 2x2 矩阵
     A1 = np.cos(beta2) * sigma_Z + np.sin(beta2) * sigma_X  # 2x2 矩阵
     B0 = cos_mu1 * sigma_Z + sin_mu1 * sigma_X  # 2x2 矩阵
     B1 = cos_mu2 * sigma_Z + sin_mu2 * sigma_X  # 2x2 矩阵
@@ -48,52 +48,47 @@ def construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta):
     p10_A1_B0 = p10 * np.kron(A1, B0)  # p10 * A1 ⊗ B0
     p11_A1_B1 = p11 * np.kron(A1, B1)  # p11 * A1 ⊗ B1
 
-    return alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1
+    # 计算组合矩阵
+    combination_matrix = alphaA0 + p00_A0_B0 + p01_A0_B1 + p10_A1_B0 - p11_A1_B1
+
+    # 计算第一个公式左侧
+    left_side_1 = alpha * np.sin(beta1) + (p00 * np.cos(beta1) + p10 * np.cos(beta2)) * sin_mu1 + (p01 * np.cos(beta1) - p11 * np.cos(beta2)) * sin_mu2
+
+    # 计算第二个公式左侧
+    left_side_2 = (p00 * np.sin(beta1) + p10 * np.sin(beta2)) * cos_mu1 + (p01 * np.sin(beta1) - p11 * np.sin(beta2)) * cos_mu2
+
+    # 代入简化公式进行计算
+    # 第一个简化公式：代入 sin_mu1 和 sin_mu2
+    left_side_simplified_1 = (p00 + p10 * np.cos(beta2)) * (p10 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt((p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2) + (p01 - p11 * np.cos(beta2)) * (-p11 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt((p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+
+    # 第二个简化公式：代入 cos_mu1 和 cos_mu2
+    left_side_simplified_2 = p10 * np.sin(beta2) * (p00 + p10 * np.cos(beta2)) / np.sqrt((p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2) - p11 * np.sin(beta2) * (p01 - p11 * np.cos(beta2)) / np.sqrt((p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+
+    return left_side_1, left_side_2, left_side_simplified_1, left_side_simplified_2
 
 
 # 示例参数
 beta1 = 0
-beta2 = np.pi / 4  # 例如 45 度
-p00 = 1.0
-p01 = 0.5
-p10 = 0.5
-p11 = 0.3
+beta2 = np.pi / 2  # 例如 45 度
+p00 = 0.98
+p01 = 0.715
+p10 = 0.15
+p11 = 0.15
 theta = np.pi / 6  # 例如 30 度
 
-# 构造矩阵
-alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta2, p00, p01, p10, p11,
-                                                                                          theta)
+# 计算左侧结果
+left_side_1, left_side_2, left_side_simplified_1, left_side_simplified_2 = construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta)
 
-# 输出 alpha 和各个矩阵
-print("alpha: ", alpha)
-print("\nalphaA0 (张量I后):")
-print(alphaA0)
-print("\np00A0B0:")
-print(p00_A0_B0)
-print("\np01A0B1:")
-print(p01_A0_B1)
-print("\np10A1B0:")
-print(p10_A1_B0)
-print("\np11A1B1:")
-print(p11_A1_B1)
+# 输出两个公式左侧的计算结果
+print("Left side of the first formula:")
+print(left_side_1)
 
-# 组合矩阵
-combination_matrix = alphaA0 + p00_A0_B0 + p01_A0_B1 + p10_A1_B0 - p11_A1_B1
+print("\nLeft side of the second formula:")
+print(left_side_2)
 
-# 输出组合矩阵
-print("\n组合矩阵 alphaA0 + p00A0B0 + p01A0B1 + p10A1B0 - p11A1B1:")
-print(combination_matrix)
+# 输出简化后的两个公式左侧的计算结果
+print("\nSimplified Left side of the first formula:")
+print(left_side_simplified_1)
 
-# 计算特征值和特征向量
-eigenvalues, eigenvectors = np.linalg.eig(combination_matrix)
-
-# 找到最大特征值的索引
-max_eigenvalue_index = np.argmax(eigenvalues)
-
-# 提取最大特征值对应的特征向量
-max_eigenvector = eigenvectors[:, max_eigenvalue_index]
-
-# 输出最大特征值和对应的特征向量
-print("\n最大特征值:", eigenvalues[max_eigenvalue_index])
-print("\n对应的特征向量:")
-print(max_eigenvector)
+print("\nSimplified Left side of the second formula:")
+print(left_side_simplified_2)

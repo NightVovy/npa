@@ -5,11 +5,13 @@ import numpy as np
 def compute_trig_functions(beta2, p00, p01, p10, p11, theta):
     cos_mu1 = (p00 + p10 * np.cos(beta2)) / np.sqrt(
         (p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
-    cos_mu2 = (p01 - p11 * np.cos(beta2)) / np.sqrt(
-        (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
 
     sin_mu1 = (p10 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt(
         (p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+
+    cos_mu2 = (p01 - p11 * np.cos(beta2)) / np.sqrt(
+        (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+
     sin_mu2 = - (p11 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt(
         (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
 
@@ -31,9 +33,9 @@ def construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta):
     sigma_X = np.array([[0, 1], [1, 0]])
 
     # 使用张量积构造矩阵 A0, A1, B0, B1
-    A0 = sigma_Z  # 2x2 矩阵
-    A1 = cos_mu1 * sigma_Z + sin_mu1 * sigma_X  # 2x2 矩阵
-    B0 = cos_mu2 * sigma_Z + sin_mu2 * sigma_X  # 2x2 矩阵
+    A0 = np.cos(beta1) * sigma_Z + np.sin(beta1) * sigma_X  # 2x2 矩阵
+    A1 = np.cos(beta2) * sigma_Z + np.sin(beta2) * sigma_X  # 2x2 矩阵
+    B0 = cos_mu1 * sigma_Z + sin_mu1 * sigma_X  # 2x2 矩阵
     B1 = cos_mu2 * sigma_Z + sin_mu2 * sigma_X  # 2x2 矩阵
 
     # 计算 alpha
@@ -52,11 +54,12 @@ def construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta):
 
 
 # 示例参数
+beta1 = 0
 beta2 = np.pi / 4  # 例如 45 度
 p00 = 1.0
-p01 = 0.5
-p10 = 0.5
-p11 = 0.3
+p01 = 1
+p10 = 1
+p11 = 1
 theta = np.pi / 6  # 例如 30 度
 
 # 构造矩阵
@@ -75,3 +78,10 @@ print("\np10A1B0:")
 print(p10_A1_B0)
 print("\np11A1B1:")
 print(p11_A1_B1)
+
+# 组合矩阵
+combination_matrix = alphaA0 + p00_A0_B0 + p01_A0_B1 + p10_A1_B0 - p11_A1_B1
+
+# 输出组合矩阵
+print("\n组合矩阵 alphaA0 + p00A0B0 + p01A0B1 + p10A1B0 - p11A1B1:")
+print(combination_matrix)
