@@ -247,3 +247,9 @@ test/new3matrix/belloperatormatrix.py: 生成Bell算子矩阵
 2025.1.24
 把new/理论值遍历的txt全放到桌面的新建文件夹了。
 new2的也一样。
+
+2025.2.7
+用gpt的机器学习算A12,A13（A13=0的时候A12自动满足0）。加了个盐酸A13,A5的值，具体A13的机器学习值在word里。
+文件夹还是new3matrix.
+
+留档gpt的机器学习代码，文件夹beifen。

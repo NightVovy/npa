@@ -53,12 +53,12 @@ def construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta):
 
 # 示例参数
 beta1 = 0
-beta2 = np.pi / 4  # 例如 45 度
-p00 = 1.0
-p01 = 0.5
-p10 = 0.5
-p11 = 0.3
-theta = np.pi / 6  # 例如 30 度
+beta2 = 0.222639  
+p00 = 0.594745
+p01 = 0.565932
+p10 = 0.372355
+p11 = 0.372355
+theta = 0.187306
 
 # 构造矩阵
 alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta2, p00, p01, p10, p11,
