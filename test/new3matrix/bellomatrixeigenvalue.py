@@ -53,16 +53,33 @@ def construct_matrices_and_alpha(beta2, p00, p01, p10, p11, theta):
 
 # 示例参数
 beta1 = 0
-beta2 = 0.222639  
-p00 = 0.594745
-p01 = 0.565932
-p10 = 0.372355
-p11 = 0.372355
-theta = 0.187306
+p00 = 0.66682436795075
+p01 = 0.786291363523314
+p10 = 0.409866957749884
+p11 = 0.50059661260185
+beta2 = 0.912451472991185
+theta = 0.749780770512441
 
 # 构造矩阵
 alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta2, p00, p01, p10, p11,
                                                                                           theta)
+# 计算 costheta00 + sintheta11
+# 量子态右矢 |00> 和 |11> 分别对应向量 [1, 0, 0, 0] 和 [0, 0, 0, 1]
+state_00 = np.array([1, 0, 0, 0])  # |00> 对应的向量
+state_11 = np.array([0, 0, 0, 1])  # |11> 对应的向量
+
+origin_state = np.cos(theta) * state_00 + np.sin(theta) * state_11  # 原始态
+
+# 输出 theta 和 beta2 的角度
+theta_deg = np.degrees(theta)
+beta2_deg = np.degrees(beta2)
+
+# 验证角度是否在 (0, pi/4) 和 (0, pi/2) 之间
+theta_check = 0 < theta < np.pi / 2
+beta2_check = 0 < beta2 < np.pi / 2
+
+
+
 
 # 输出 alpha 和各个矩阵
 print("alpha: ", alpha)
@@ -97,3 +114,8 @@ max_eigenvector = eigenvectors[:, max_eigenvalue_index]
 print("\n最大特征值:", eigenvalues[max_eigenvalue_index])
 print("\n对应的特征向量:")
 print(max_eigenvector)
+print("\ncostheta00 + sintheta11:", origin_state)
+print(f"theta (角度): {theta_deg:.2f}°")
+print(f"beta2 (角度): {beta2_deg:.2f}°")
+print(f"theta 是否在 (0, pi/4) 区间内: {0 < theta < np.pi / 4}")
+print(f"beta2 是否在 (0, pi/2) 区间内: {0 < beta2 < np.pi / 2}")
