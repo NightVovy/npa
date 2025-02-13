@@ -255,3 +255,8 @@ new2的也一样。
 留档gpt的机器学习代码，文件夹beifen。
 1.py没有加入pij大小约束。
 2.py我不知道有没有用，是1.py加入了筛选接近0or1，然后加入了结果拟合的代码。没运行过。
+
+2025.2.13
+new3matrix/belloIlhs.py: 在bellomatrix特征值.py的基础上，加入了ILHS+ILHV的计算。
+最后要的是IQ>ILHS & IQ>ILHV的保证区间。（IQ好像就是大于ILHS，如何确定区间？）
+加入了计算A15中lambda最后一个<=号的右侧。
