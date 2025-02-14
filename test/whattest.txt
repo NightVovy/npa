@@ -253,10 +253,20 @@ new2的也一样。
 文件夹还是new3matrix.
 
 留档gpt的机器学习代码，文件夹beifen。
-1.py没有加入pij大小约束。
+1.py没有加入pij大小约束。【这个不对，我随便复制的】
 2.py我不知道有没有用，是1.py加入了筛选接近0or1，然后加入了结果拟合的代码。没运行过。
 
 2025.2.13
 new3matrix/belloIlhs.py: 在bellomatrix特征值.py的基础上，加入了ILHS+ILHV的计算。
 最后要的是IQ>ILHS & IQ>ILHV的保证区间。（IQ好像就是大于ILHS，如何确定区间？）
 加入了计算A15中lambda最后一个<=号的右侧。
+
+2025.2.14
+机器学习：改成拟合cosbeta2和cos2theta了，看为一个整体。
+beifen/ml3.py: 就是用了上面的拟合。ntgpt不给我运行，只能自己跑了，没意思。
+new3matrix/belloIlhsv2.py: Ilhs的cos2theta, cosbeta2版本。
+
+new3matrix/machinelearning文件夹：不写在beifen里了，单独列出来。
+                  mlall.py: 让A13=0且把cos2theta, cosbeta2写在一起，命名为t和b。
+                  mlpsame.py: 寻找拟合初始值，pij相等。【not final】
+                  testml.py: 拒绝删除粘贴，全在这里测试。

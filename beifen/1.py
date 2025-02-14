@@ -1,54 +1,73 @@
-# 多次随机初始化优化，取消 p00 >= p01 >= p10 >= p11 约束
-def multi_start_optimization_no_constraints(n_trials=10):
-    solutions = []
+import numpy as np
+from scipy.optimize import minimize
 
-    for _ in range(n_trials):
-        # 随机初始参数，确保在 (0, 1) 之间
-        initial_params = [
-            np.random.uniform(1e-5, 1 - 1e-5),  # p00
-            np.random.uniform(1e-5, 1 - 1e-5),  # p01
-            np.random.uniform(1e-5, 1 - 1e-5),  # p10
-            np.random.uniform(1e-5, 1 - 1e-5),  # p11
-            np.random.uniform(1e-5, np.pi / 2 - 1e-5),  # beta2
-            np.random.uniform(1e-5, np.pi / 4 - 1e-5)   # theta
-        ]
 
-        # 变量边界
-        bounds = [
-            (1e-5, 1 - 1e-5),  # p00 in (0, 1)
-            (1e-5, 1 - 1e-5),  # p01 in (0, 1)
-            (1e-5, 1 - 1e-5),  # p10 in (0, 1)
-            (1e-5, 1 - 1e-5),  # p11 in (0, 1)
-            (1e-5, np.pi / 2 - 1e-5),  # beta2 in (0, pi/2)
-            (1e-5, np.pi / 4 - 1e-5)   # theta in (0, pi/4)
-        ]
+# 计算 sin(mu1), sin(mu2), cos(mu1), cos(mu2)
+def compute_trig_functions(beta2, p00, p01, p10, p11, theta):
+    cos_mu1 = (p00 + p10 * np.cos(beta2)) / np.sqrt(
+        (p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+    cos_mu2 = (p01 - p11 * np.cos(beta2)) / np.sqrt(
+        (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
 
-        # 执行优化（无约束）
-        result = minimize(objective, initial_params, bounds=bounds)
+    sin_mu1 = (p10 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt(
+        (p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+    sin_mu2 = - (p11 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt(
+        (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
 
-        # 只保存成功收敛的解
-        if result.success:
-            solutions.append((result.x, result.fun))
+    return cos_mu1, cos_mu2, sin_mu1, sin_mu2
 
-    return solutions
 
-# 运行多次优化，取消约束
-multi_solutions_no_constraints = multi_start_optimization_no_constraints(n_trials=10)
+# 计算第一个公式左侧
+def left_side_1(beta2, p00, p01, p10, p11, theta):
+    cos_mu1, cos_mu2, sin_mu1, sin_mu2 = compute_trig_functions(beta2, p00, p01, p10, p11, theta)
 
-# 显示所有找到的解
-results_no_constraints = []
-for params, value in multi_solutions_no_constraints:
-    p00, p01, p10, p11, beta2, theta = params
-    results_no_constraints.append({
-        'p00': p00,
-        'p01': p01,
-        'p10': p10,
-        'p11': p11,
-        'beta2 (rad)': beta2,
-        'theta (rad)': theta,
-        'Minimized Value': value
-    })
+    term1 = (p00 + p10 * np.cos(beta2)) * (p10 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt(
+        (p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+    term2 = (p01 - p11 * np.cos(beta2)) * (-p11 * np.sin(beta2) * np.sin(2 * theta)) / np.sqrt(
+        (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
 
-# 转换为 DataFrame 并展示
-df_results_no_constraints = pd.DataFrame(results_no_constraints)
-tools.display_dataframe_to_user("Optimized Solutions without Constraints", df_results_no_constraints)
+    return term1 + term2
+
+
+# 计算第二个公式左侧
+def left_side_2(beta2, p00, p01, p10, p11, theta):
+    cos_mu1, cos_mu2, sin_mu1, sin_mu2 = compute_trig_functions(beta2, p00, p01, p10, p11, theta)
+
+    term1 = p10 * np.sin(beta2) * (p00 + p10 * np.cos(beta2)) / np.sqrt(
+        (p00 + p10 * np.cos(beta2)) ** 2 + (p10 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+    term2 = -p11 * np.sin(beta2) * (p01 - p11 * np.cos(beta2)) / np.sqrt(
+        (p01 - p11 * np.cos(beta2)) ** 2 + (p11 * np.sin(beta2) * np.sin(2 * theta)) ** 2)
+
+    return term1 + term2
+
+
+# 目标函数：计算两个公式左侧的平方和
+def objective(params, beta2, theta):
+    p00, p01, p10, p11 = params
+    # 计算两个公式的左侧
+    left_1 = left_side_1(beta2, p00, p01, p10, p11, theta)
+    left_2 = left_side_2(beta2, p00, p01, p10, p11, theta)
+    # 返回两个公式左侧的平方和
+    return left_1 ** 2 + left_2 ** 2
+
+
+# 优化过程：使用最小化方法
+def optimize_parameters(beta2, theta):
+    # 初始参数猜测 (p00, p01, p10, p11)
+    initial_params = [1.0, 0.5, 0.5, 0.3]
+
+    # 最小化目标函数
+    result = minimize(objective, initial_params, args=(beta2, theta),
+                      bounds=[(None, None), (None, None), (None, None), (None, None)])
+
+    return result.x  # 返回优化后的参数
+
+
+# 示例参数
+beta2 = np.pi / 4  # 例如 45 度
+theta = np.pi / 6  # 例如 30 度
+
+# 优化参数
+optimized_params = optimize_parameters(beta2, theta)
+
+print(f"Optimized p parameters: {optimized_params}")
