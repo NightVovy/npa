@@ -264,9 +264,19 @@ new3matrix/belloIlhs.py: 在bellomatrix特征值.py的基础上，加入了ILHS+
 2025.2.14
 机器学习：改成拟合cosbeta2和cos2theta了，看为一个整体。
 beifen/ml3.py: 就是用了上面的拟合。ntgpt不给我运行，只能自己跑了，没意思。
+
 new3matrix/belloIlhsv2.py: Ilhs的cos2theta, cosbeta2版本。
 
 new3matrix/machinelearning文件夹：不写在beifen里了，单独列出来。
                   mlall.py: 让A13=0且把cos2theta, cosbeta2写在一起，命名为t和b。
                   mlpsame.py: 寻找拟合初始值，pij相等。【not final】
                   testml.py: 拒绝删除粘贴，全在这里测试。
+
+                  mlpij1.py: pij=1
+                  mlp00p01beta.py: p00=p01=beta2, p10=p11=1. 结果在word里。
+          /机器学习test/
+                  testml2.py: 我或许想起来为什么要建立test文件夹了。这个文件就是用来无限复制粘贴的，不是final。
+                  testml3.py: 上面是pij=1的，这个是p00=p01=beta2, p10=p11=1的。
+                  testml4.py: p10=p11.
+
+

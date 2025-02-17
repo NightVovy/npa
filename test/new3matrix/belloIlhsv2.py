@@ -115,12 +115,12 @@ def calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha):
 
 # 示例参数
 beta1 = 0
-p00 = 0.2931176900826821
-p01 = 0.2931176900826821
-p10 = 0.2931176900826821
-p11 = 0.2931176900826821
-cosbeta2 = 0.05737886572899623
-cos2theta = 0.8066611538345884
+p00 = 0.40392907012189827
+p01 = 0.62197372597286
+p10 = 0.2588673027857956
+p11 = 0.2588673027857956
+cosbeta2 = 0.4211514031287369
+cos2theta = 0.5328255807833551
 
 # 构造矩阵
 alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta1, cosbeta2, cos2theta,
@@ -183,15 +183,21 @@ print(max_eigenvector)
 print("\ncostheta00 + sintheta11:", origin_state)
 
 # 输出结果
-print("\n最大特征值可能是IQ:", eigenvalues[max_eigenvalue_index])
+print("\n还是最大特征值，可能是IQ:", eigenvalues[max_eigenvalue_index])
 print(f"ilhv: {ilhv}")
 print(f"ilhs: {ilhs}")
+print(f"最大特征值是否大于 ilhv? {'是' if eigenvalues[max_eigenvalue_index] > ilhv else '否'}")
+print(f"最大特征值是否大于 ilhs? {'是' if eigenvalues[max_eigenvalue_index] > ilhs else '否'}")
 
 # 调用函数A14计算结果
 a14 = calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha)
 # 输出结果
 print("A14最后一个<=计算结果:", a14)
 print("最大特征值<=A14?:", eigenvalues[max_eigenvalue_index]<=a14)
+
+# 特殊情况
+print("\npij=1的最大值:", np.sqrt(8 + 2 * alpha**2))
+print("\np00=p01=beta的最大值:", np.sqrt((4 + alpha**2) * (1 + np.arccos(cosbeta2)**2)))
 
 
 
