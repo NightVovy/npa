@@ -1,0 +1,76 @@
+import numpy as np
+from scipy.optimize import minimize
+
+
+# 公式 A13
+def compute_A13(p00, p01, p10, p11, cosbeta2, cos2theta):
+    left_side = (p10 * (p00 + p10 * cosbeta2)) / np.sqrt(
+        (p00 + p10 * cosbeta2) ** 2 + p10 ** 2 * (1 - cosbeta2 ** 2) * (1 - cos2theta ** 2)) \
+                - (p11 * (p01 - p11 * cosbeta2)) / np.sqrt(
+        (p01 - p11 * cosbeta2) ** 2 + p11 ** 2 * (1 - cosbeta2 ** 2) * (1 - cos2theta ** 2))
+    return left_side
+
+
+# 损失函数
+def loss_function(params):
+    p00, p01, p10, p11, cosbeta2, cos2theta = params
+    return np.abs(compute_A13(p00, p01, p10, p11, cosbeta2, cos2theta))
+
+
+# 设置约束条件
+def constraints():
+    cons = [
+        {'type': 'ineq', 'fun': lambda x: x[0] - 0.01},  # p00 > 0.01
+        {'type': 'ineq', 'fun': lambda x: 0.99 - x[0]},  # p00 < 0.99
+        {'type': 'ineq', 'fun': lambda x: x[1] - 0.01},  # p01 > 0.01
+        {'type': 'ineq', 'fun': lambda x: 0.99 - x[1]},  # p01 < 0.99
+        {'type': 'ineq', 'fun': lambda x: x[2] - 0.01},  # p10 > 0.01
+        {'type': 'ineq', 'fun': lambda x: 0.99 - x[2]},  # p10 < 0.99
+        {'type': 'ineq', 'fun': lambda x: x[3] - 0.01},  # p11 > 0.01
+        {'type': 'ineq', 'fun': lambda x: 0.99 - x[3]},  # p11 < 0.99
+        {'type': 'ineq', 'fun': lambda x: np.abs(x[2] - x[3]) - 0.001},  # p10 != p11
+        {'type': 'ineq', 'fun': lambda x: x[4] - 0.01},  # cosbeta2 > 0.01
+        {'type': 'ineq', 'fun': lambda x: 0.99 - x[4]},  # cosbeta2 < 0.99
+        {'type': 'ineq', 'fun': lambda x: x[5] - 0.01},  # cos2theta > 0.01
+        {'type': 'ineq', 'fun': lambda x: 0.99 - x[5]}  # cos2theta < 0.99
+    ]
+    return cons
+
+
+# 生成数据
+def generate_data(num_samples=30):
+    data = []
+    while len(data) < num_samples:
+        # 随机初始化参数，保证初始化在(0.01, 0.99)范围内
+        initial_params = np.random.rand(6) * 0.98 + 0.01  # 保证初始化在(0.01, 0.99)范围内
+
+        # 优化目标
+        result = minimize(loss_function, initial_params, constraints=constraints(), method='SLSQP',
+                          options={'disp': False})
+
+        # 提取优化后的参数
+        optimized_params = result.x
+        p00, p01, p10, p11, cosbeta2, cos2theta = optimized_params
+
+        # 检查是否有参数等于0.01或0.99，若有则忽略该组数据
+        if np.any(np.isclose(optimized_params, 0.01)) or np.any(np.isclose(optimized_params, 0.99)):
+            continue
+
+        A13_value = compute_A13(p00, p01, p10, p11, cosbeta2, cos2theta)
+
+        # 存储数据
+        data.append([p00, p01, p10, p11, cosbeta2, cos2theta, A13_value])
+
+    return data
+
+
+# 生成30组数据
+data = generate_data(30)
+
+# 输出每组数据，确保所有小数都完整显示
+for i, params in enumerate(data):
+    p00, p01, p10, p11, cosbeta2, cos2theta, A13_value = params
+    print(f"Group {i + 1}:")
+    print(
+        f"p00 = {p00:.15f}, p01 = {p01:.15f}, p10 = {p10:.15f}, p11 = {p11:.15f}, cosbeta2 = {cosbeta2:.15f}, cos2theta = {cos2theta:.15f}, A13 = {A13_value:.15f}")
+    print("-" * 80)

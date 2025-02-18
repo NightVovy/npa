@@ -278,5 +278,7 @@ new3matrix/machinelearning文件夹：不写在beifen里了，单独列出来。
                   testml2.py: 我或许想起来为什么要建立test文件夹了。这个文件就是用来无限复制粘贴的，不是final。
                   testml3.py: 上面是pij=1的，这个是p00=p01=beta2, p10=p11=1的。
                   testml4.py: p10=p11.
+                  testml5.py: p10!=p11尝试一下。
+                  testml6.py: 既然是找lambda>ILHS,ILHV的，并且Ilhv >= Ilhs, 所以找lambda<ilhv试试看？（还是应该找大于呢？）
 
 
