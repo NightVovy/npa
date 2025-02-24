@@ -270,15 +270,21 @@ new3matrix/belloIlhsv2.py: Ilhs的cos2theta, cosbeta2版本。
 new3matrix/machinelearning文件夹：不写在beifen里了，单独列出来。
                   mlall.py: 让A13=0且把cos2theta, cosbeta2写在一起，命名为t和b。
                   mlpsame.py: 寻找拟合初始值，pij相等。【not final】
-                  testml.py: 拒绝删除粘贴，全在这里测试。
+                  mlpsame_2.py: 没任何区别，还是pij相等，只不过是过了10天后写的。
 
                   mlpij1.py: pij=1
                   mlp00p01beta.py: p00=p01=beta2, p10=p11=1. 结果在word里。
           /机器学习test/
+                  testml.py: 拒绝删除粘贴，全在这里测试。
                   testml2.py: 我或许想起来为什么要建立test文件夹了。这个文件就是用来无限复制粘贴的，不是final。
                   testml3.py: 上面是pij=1的，这个是p00=p01=beta2, p10=p11=1的。
                   testml4.py: p10=p11.
                   testml5.py: p10!=p11尝试一下。
                   testml6.py: 既然是找lambda>ILHS,ILHV的，并且Ilhv >= Ilhs, 所以找lambda<ilhv试试看？（还是应该找大于呢？）
 
+          /box文件夹: 我想把拟合后的结果直接放入belloilhsv2.py中验证lambda>ilhv。
+          另外，所有的“机器学习”都是优化而已。
+                  optimize_pij_same.py: 里面有一个可以调用的函数optimize_pijsame()，返回二位数组，返回p,cosbeta2,cos2theta.
+                  其中pij相等且不为1.
+                  pijsame_test.py: 结合了belloilhsv.py的代码，调用了上面的函数，输出最大特征值lambda，ilhv,ilhs并比较大小。
 

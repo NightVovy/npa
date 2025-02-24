@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from optimize_pij_same import optimize_pijsame
 
 # 计算 sin(mu1), sin(mu2), cos(mu1), cos(mu2)
 def compute_trig_functions(cosbeta2, cos2theta, p00, p01, p10, p11):
@@ -115,90 +116,92 @@ def calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha):
 
 # 示例参数
 beta1 = 0
-p00 = 0.5450466374
-p01 = 0.5450466374
-p10 = 0.5450466374
-p11 = 0.5450466374
-cosbeta2 = 0.2656852589
-cos2theta = 0.7382727414
 
-# 构造矩阵
-alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta1, cosbeta2, cos2theta,
-                                                                                          p00, p01, p10, p11)
+# 获取20组 (p, cosbeta2, cos2theta)
+solutions = optimize_pijsame()
 
-# 计算 costheta00 + sintheta11
-# 量子态右矢 |00> 和 |11> 分别对应向量 [1, 0, 0, 0] 和 [0, 0, 0, 1]
-state_00 = np.array([1, 0, 0, 0])  # |00> 对应的向量
-state_11 = np.array([0, 0, 0, 1])  # |11> 对应的向量
+# 遍历每组 (p, cosbeta2, cos2theta) 并进行计算
+for i, (p, cosbeta2, cos2theta) in enumerate(solutions):
+    print(f"\n第 {i+1} 组: p = {p:.4f}, cosbeta2 = {cosbeta2:.4f}, cos2theta = {cos2theta:.4f}")
+    p00 = p
+    p01 = p
+    p10 = p
+    p11 = p
 
-cos_theta, sin_theta = compute_trig_from_cos2theta(cos2theta)
-# 计算原始态
-origin_state = cos_theta * state_00 + sin_theta * state_11
+    # 构造矩阵
+    alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta1, cosbeta2,
+                                                                                              cos2theta,
+                                                                                              p00, p01, p10, p11)
+
+    # 计算 costheta00 + sintheta11
+    # 量子态右矢 |00> 和 |11> 分别对应向量 [1, 0, 0, 0] 和 [0, 0, 0, 1]
+    state_00 = np.array([1, 0, 0, 0])  # |00> 对应的向量
+    state_11 = np.array([0, 0, 0, 1])  # |11> 对应的向量
+
+    cos_theta, sin_theta = compute_trig_from_cos2theta(cos2theta)
+    # 计算原始态
+    origin_state = cos_theta * state_00 + sin_theta * state_11
+
+    resultA13 = compute_A13(p00, p01, p10, p11, cosbeta2, cos2theta)
+
+    # 计算 ilhv 和 ilhs
+    ilhv, ilhs = compute_ilhv_and_ilhs(alpha, p00, p01, p10, p11, cosbeta2)
+
+    # 输出 alpha 和各个矩阵
+    # print("alpha: ", alpha)
+    # print("\nalphaA0 (张量I后):")
+    # print(alphaA0)
+    # print("\np00A0B0:")
+    # print(p00_A0_B0)
+    # print("\np01A0B1:")
+    # print(p01_A0_B1)
+    # print("\np10A1B0:")
+    # print(p10_A1_B0)
+    # print("\np11A1B1:")
+    # print(p11_A1_B1)
+
+    # 组合矩阵
+    combination_matrix = alphaA0 + p00_A0_B0 + p01_A0_B1 + p10_A1_B0 - p11_A1_B1
+
+    # # 输出组合矩阵
+    # print("\n组合矩阵 alphaA0 + p00A0B0 + p01A0B1 + p10A1B0 - p11A1B1:")
+    # print(combination_matrix)
+
+    # 计算特征值和特征向量
+    eigenvalues, eigenvectors = np.linalg.eig(combination_matrix)
+
+    # 找到最大特征值的索引
+    max_eigenvalue_index = np.argmax(eigenvalues)
+
+    # 提取最大特征值对应的特征向量
+    max_eigenvector = eigenvectors[:, max_eigenvalue_index]
+
+    print("\nalpha: ", alpha)
+    print("A13右侧是否为0:", resultA13)
+
+    # 输出最大特征值和对应的特征向量
+    print("\n最大特征值:", eigenvalues[max_eigenvalue_index])
+    print("对应的特征向量:")
+    print(max_eigenvector)
+    print("costheta00 + sintheta11:", origin_state)
+
+    # 输出结果
+    print("\n还是最大特征值，也就是lambda:", eigenvalues[max_eigenvalue_index])
+    print(f"ilhv: {ilhv}")
+    print(f"ilhs: {ilhs}")
+    print(f"ilhv >= ilhs? {'是' if ilhv >= ilhs else '否'}")
+    print(f"最大特征值是否大于 ilhv? {'是' if eigenvalues[max_eigenvalue_index] > ilhv else '否'}")
+    print(f"最大特征值是否大于 ilhs? {'是' if eigenvalues[max_eigenvalue_index] > ilhs else '否'}")
+
+    # 调用函数A14计算结果
+    a14 = calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha)
+    # 输出结果
+    print("A14最后一个<=计算结果:", a14)
+    print("最大特征值<=A14?:", eigenvalues[max_eigenvalue_index] <= a14)
 
 
-resultA13 = compute_A13(p00, p01, p10, p11, cosbeta2, cos2theta)
 
 
-
-# 计算 ilhv 和 ilhs
-ilhv, ilhs = compute_ilhv_and_ilhs(alpha, p00, p01, p10, p11, cosbeta2)
-
-
-# 输出 alpha 和各个矩阵
-print("alpha: ", alpha)
-print("\nalphaA0 (张量I后):")
-print(alphaA0)
-print("\np00A0B0:")
-print(p00_A0_B0)
-print("\np01A0B1:")
-print(p01_A0_B1)
-print("\np10A1B0:")
-print(p10_A1_B0)
-print("\np11A1B1:")
-print(p11_A1_B1)
-
-# 组合矩阵
-combination_matrix = alphaA0 + p00_A0_B0 + p01_A0_B1 + p10_A1_B0 - p11_A1_B1
-
-# 输出组合矩阵
-print("\n组合矩阵 alphaA0 + p00A0B0 + p01A0B1 + p10A1B0 - p11A1B1:")
-print(combination_matrix)
-
-# 计算特征值和特征向量
-eigenvalues, eigenvectors = np.linalg.eig(combination_matrix)
-
-# 找到最大特征值的索引
-max_eigenvalue_index = np.argmax(eigenvalues)
-
-# 提取最大特征值对应的特征向量
-max_eigenvector = eigenvectors[:, max_eigenvalue_index]
-
-print("\nalpha: ", alpha)
-print("\nA13右侧是否为0:", resultA13)
-
-# 输出最大特征值和对应的特征向量
-print("\n最大特征值:", eigenvalues[max_eigenvalue_index])
-print("\n对应的特征向量:")
-print(max_eigenvector)
-print("\ncostheta00 + sintheta11:", origin_state)
-
-# 输出结果
-print("\n还是最大特征值，也就是lambda:", eigenvalues[max_eigenvalue_index])
-print(f"ilhv: {ilhv}")
-print(f"ilhs: {ilhs}")
-print(f"ilhv >= ilhs? {'是' if ilhv >= ilhs else '否'}")
-print(f"最大特征值是否大于 ilhv? {'是' if eigenvalues[max_eigenvalue_index] > ilhv else '否'}")
-print(f"最大特征值是否大于 ilhs? {'是' if eigenvalues[max_eigenvalue_index] > ilhs else '否'}")
-
-# 调用函数A14计算结果
-a14 = calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha)
-# 输出结果
-print("A14最后一个<=计算结果:", a14)
-print("最大特征值<=A14?:", eigenvalues[max_eigenvalue_index]<=a14)
-
-# 特殊情况
-print("\npij=1的最大值:", np.sqrt(8 + 2 * alpha**2))
-print("\np00=p01=beta的最大值:", np.sqrt((4 + alpha**2) * (1 + np.arccos(cosbeta2)**2)))
 
 
 
