@@ -288,3 +288,5 @@ new3matrix/machinelearning文件夹：不写在beifen里了，单独列出来。
                   其中pij相等且不为1.
                   pijsame_test.py: 结合了belloilhsv.py的代码，调用了上面的函数，输出最大特征值lambda，ilhv,ilhs并比较大小。
 
+Q: beta2的范围如果是(0,pi), 那cosbeta2的范围是(-1,1)...
+A: 得把之前的代码改了。当然不是全改，因为你要找新的pij关系。 备注：只改了optimize_pij_same.py

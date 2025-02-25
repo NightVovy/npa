@@ -112,15 +112,31 @@ def calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha):
     return term1 + term2 + term3
 
 
+def calculate_a14_2(p00, p01, p10, p11, cosbeta2, cos2theta, alpha):
+    # 计算 sin(beta2) 和 sin(2*theta) 根据 cosbeta2 和 cos2theta
+    sinbeta2 = np.sqrt(1 - cosbeta2 ** 2)  # sin(beta2) 根据 cosbeta2 计算
+    sin2theta = np.sqrt(1 - cos2theta ** 2)  # sin(2*theta) 根据 cos2theta 计算
+
+    # 计算各个项
+    term1 = (p00 + p10 * cosbeta2)**2 / np.sqrt((p00 + p10 * cosbeta2)**2 + (p10 * sinbeta2 * sin2theta)**2)
+    term2 = (p01 - p11 * cosbeta2)**2 / np.sqrt((p01 - p11 * cosbeta2)**2 + (p11 * sinbeta2 * sin2theta)**2)
+    term3 = alpha * cos2theta
+    term4 = (p10 * sinbeta2 * sin2theta)**2 / np.sqrt((p00 + p10 * cosbeta2)**2 + (p10 * sinbeta2 * sin2theta)**2)
+    term5 = (p11 * sinbeta2 * sin2theta)**2 / np.sqrt((p01 - p11 * cosbeta2)**2 + (p11 * sinbeta2 * sin2theta)**2)
+
+    # 返回计算结果
+    return term1 + term2 + term3 + term4 + term5
+
+
 
 # 示例参数
 beta1 = 0
-p00 = 0.5450466374
-p01 = 0.5450466374
-p10 = 0.5450466374
-p11 = 0.5450466374
-cosbeta2 = 0.2656852589
-cos2theta = 0.7382727414
+p00 = 0.40621506524871875
+p01 = 0.7509393056352284
+p10 = 0.3270360379959836
+p11 = 0.3079973092934956
+cosbeta2 = 0.27375784498928923
+cos2theta = 0.5402082591559652
 
 # 构造矩阵
 alpha, alphaA0, p00_A0_B0, p01_A0_B1, p10_A1_B0, p11_A1_B1 = construct_matrices_and_alpha(beta1, cosbeta2, cos2theta,
@@ -191,10 +207,12 @@ print(f"最大特征值是否大于 ilhv? {'是' if eigenvalues[max_eigenvalue_i
 print(f"最大特征值是否大于 ilhs? {'是' if eigenvalues[max_eigenvalue_index] > ilhs else '否'}")
 
 # 调用函数A14计算结果
-a14 = calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha)
+a14_4 = calculate_a14_1(p00, p01, p10, p11, cosbeta2, cos2theta, alpha)
+a14_1 = calculate_a14_2(p00, p01, p10, p11, cosbeta2, cos2theta, alpha)
 # 输出结果
-print("A14最后一个<=计算结果:", a14)
-print("最大特征值<=A14?:", eigenvalues[max_eigenvalue_index]<=a14)
+print("A14最后一个<=计算结果:", a14_4)
+print("最大特征值<=A14?:", eigenvalues[max_eigenvalue_index]<=a14_4)
+print("A14第一个=计算结果:", a14_1)
 
 # 特殊情况
 print("\npij=1的最大值:", np.sqrt(8 + 2 * alpha**2))
