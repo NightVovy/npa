@@ -290,3 +290,8 @@ new3matrix/machinelearning文件夹：不写在beifen里了，单独列出来。
 
 Q: beta2的范围如果是(0,pi), 那cosbeta2的范围是(-1,1)...
 A: 得把之前的代码改了。当然不是全改，因为你要找新的pij关系。 备注：只改了optimize_pij_same.py
+
+          /sum文件夹: 我没起全新文件夹已经很仁慈了。
+          整合: mlall.py but 修改版，主要修改cosbeta2.     [nopti.py] numerical optimization
+               belloiLHSv2.py: 需要修改调用mlall的值。     [bello.py]
+               npa.jl: 没错是juila。                     [npa.jl]
